@@ -1,17 +1,7 @@
 import React from "react";
 
-interface ButtonProps {
-  label: string;
-  onClick: () => void;
-  className?: string;
+function Button() {
+  return <button className="btn btn--accent">Sign Up</button>;
 }
-
-const Button: React.FC<ButtonProps> = ({ label, onClick, className }) => {
-  return (
-    <button onClick={onClick} className={`btn ${className}`}>
-      {label}
-    </button>
-  );
-};
 
 export default Button;
