@@ -18,7 +18,8 @@ body {
   font-family: "Inter", Arial, Helvetica, sans-serif, sans-serif;
   font-size: 1.25rem;
   line-height: 1.4;
-  color: var(--body-color);
+  color: var(--headings-color);
+  background-color: var(--body-color);
 }
 h1,
 h2,
@@ -39,4 +40,145 @@ h3 {
 }
 p {
   margin-top: 0;
+}
+
+/* Navigation Bar */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 0.625rem;
+  margin: 1rem 0 0 0;
+}
+.nav__list {
+  margin: 0;
+  width: 100%;
+}
+.nav__item {
+  padding: 0.3125rem 1.25rem;
+  border-bottom: 1px solid #222;
+}
+
+.nav__item > a {
+  color: var(--primary-color);
+  transition: color 0.3s;
+}
+.nav__item > a:hover {
+  color: var(--primary-color-hover);
+}
+.nav__item > .btn--accent {
+  color: var(--button-color);
+}
+.nav__item > .btn--accent:hover {
+  color: var(--button-color);
+}
+.nav__toggler {
+  opacity: 0.5;
+}
+.nav__toggler {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: box-shadow 0.15s;
+}
+.nav.collapsible--expanded .nav__toggler {
+  opacity: 1;
+  box-shadow: 0 0 0 3px #666;
+  border-radius: 5px;
+}
+
+.nav__brand {
+  transform: translate(5px);
+}
+@media screen and (min-width: 768px) {
+  .nav__toggler {
+    display: none;
+  }
+  .nav__list {
+    width: auto;
+    display: flex;
+    font-size: 1rem;
+    max-height: 100%;
+    opacity: 1;
+  }
+  .nav__item {
+    border: 0;
+  }
+}
+/* Buttons */
+.btn {
+  cursor: pointer;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+  margin: 0.625rem 0.2rem;
+  padding: 0.8rem 4vw;
+  border: 0;
+  outline: 0;
+  border-radius: 30px;
+}
+.btn--action-flex {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.btn--small {
+  font-size: 1rem;
+  padding: 0.4rem 2vw;
+}
+.btn--accent {
+  background-color: var(--accent-color);
+  color: #fff;
+}
+.btn--accent:hover,
+.btn--accent:focus {
+  background: #d67865;
+}
+.btn--outline {
+  background: #fff;
+  color: var(--headings-color);
+  border: 2px solid var(--headings-color);
+}
+.btn--outline:hover {
+  background: var(--headings-color);
+  color: #fff;
+}
+.btn--stretched {
+  padding-left: 3.75rem;
+  padding-right: 3.75rem;
+}
+.btn--block {
+  width: 100%;
+  display: inline-block;
+}
+.btn--edit {
+  background-color: var(--edit-color);
+  color: #0a0a0a;
+}
+.btn--edit:hover,
+.btn--edit:focus {
+  background-color: var(--edit-color-hover);
+}
+.btn--delete {
+  background-color: var(--delete-color);
+  color: #0a0a0a;
+}
+.btn--delete:hover,
+.btn--delete:focus {
+  background-color: var(--delete-color-hover);
+}
+.btn--open {
+  background-color: var(--open-color);
+  color: #ffffff;
+}
+.btn--open:hover,
+.btn--open:focus {
+  background-color: var(--open-color-hover);
+  color: #ffffff;
+}
+@media screen and (min-width: 1024px) {
+  .btn {
+    font-size: 0.9375rem;
+  }
 }
