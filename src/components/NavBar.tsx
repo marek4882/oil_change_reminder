@@ -5,7 +5,7 @@ function NavBar() {
     <header>
       <nav className="nav collapsible">
         <Link className="nav__brand" to="/">
-          <img src="src/assets/react.svg" alt="React Logo" />
+          <img src="src\assets\logo.svg" alt="Oil Change Reminder Logo" />
         </Link>
         <svg className="icon icon--white nav__toggler">
           <use xlinkHref="./assets/sprite.svg#menu"></use>
@@ -15,7 +15,15 @@ function NavBar() {
             <Link to="/">Home</Link>
           </li>
           <li className="nav__item">
-            <Link to="/signin">Sign In</Link>
+            <Link to="/Vehicle">My Vehicle</Link>
+          </li>
+          <li className="nav__item">
+            <Link to="/Docs">Docs</Link>
+          </li>
+          <li className="nav__item">
+            <Link to="/signin" className="btn btn--accent">
+              Sign In
+            </Link>
           </li>
         </ul>
       </nav>
