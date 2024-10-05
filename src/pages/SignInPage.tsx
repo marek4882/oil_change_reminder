@@ -1,18 +1,49 @@
-import React from "react";
-
+import { GoogleLogo } from "@phosphor-icons/react";
 function SignInPage() {
   return (
-    <form>
-      <h3>Login Here</h3>
+    <section className="form-container">
+      <picture className="hero__image-container">
+        <img
+          className="hero__image"
+          src="src/assets/signinsignupimage.svg"
+          alt=""
+        />
+      </picture>
+      <form className="form-signin">
+        <h1>Sign In</h1>
+        <div className="form-group">
+          <input
+            className="form-control"
+            type="text"
+            name="login"
+            placeholder="Login"
+            maxLength={255}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <input
+            className="form-control"
+            type="password"
+            name="password"
+            placeholder="Password"
+            maxLength={255}
+            required
+          />
+        </div>
+        <button className="btn btn--accent btn--form" type="submit">
+          Sign in
+        </button>
+        <div className="btn btn--outline grid grid--1x2">
+          <GoogleLogo size={32} /> <a>Sign In by Google</a>
+        </div>
 
-      <label htmlFor="username">Username</label>
-      <input type="text" placeholder="Email or Phone" id="username" />
-
-      <label htmlFor="password">Password</label>
-      <input type="password" placeholder="Password" id="password" />
-
-      <button type="submit">Log In</button>
-    </form>
+        <p className="muted">Copyright &copy; 2024</p>
+        <p className="signup-message">
+          Don't have an account? <a href="/signup">Sign Up</a>
+        </p>
+      </form>
+    </section>
   );
 }
 
