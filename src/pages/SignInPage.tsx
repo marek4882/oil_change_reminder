@@ -1,4 +1,6 @@
 import { GoogleLogo } from "@phosphor-icons/react";
+import { Route } from "react-router-dom";
+import SignUpPage from "./SignUpPage";
 function SignInPage() {
   return (
     <section className="form-container">
@@ -40,7 +42,8 @@ function SignInPage() {
 
         <p className="muted">Copyright &copy; 2024</p>
         <p className="signup-message">
-          Don't have an account? <a href="/signup">Sign Up</a>
+          Don't have an account?{" "}
+          <Route path="/signup" element={<SignUpPage />} />
         </p>
       </form>
     </section>
