@@ -57,6 +57,38 @@ ul {
   margin-right: 1.25rem;
 }
 
+/* Collapsibles */
+.collapsible__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.collapsible__heading {
+  margin-top: 0;
+  font-size: 1.875rem;
+}
+
+.collapsible__chevron {
+  transform: rotate(-90deg);
+  transition: transform 0.3s;
+}
+
+.collapsible__content {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+.collapsible--expanded .collapsible__chevron {
+  transform: rotate(0);
+}
+
+.collapsible--expanded .collapsible__content {
+  max-height: 100vh;
+  opacity: 1;
+}
+
 /* Navigation Bar */
 .nav {
   display: flex;
@@ -121,6 +153,34 @@ ul {
     border: 0;
   }
 }
+/* Icons */
+.icon {
+  width: 40px;
+  height: 40px;
+}
+.icon--small {
+  width: 30px;
+  height: 30px;
+}
+.icon--primary {
+  fill: var(--primary-color);
+}
+.icon--white {
+  fill: #fff;
+}
+.icon-container {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background: #f3f9fa;
+  width: 64px;
+  height: 64px;
+  border-radius: 100%;
+}
+.icon-container--accent {
+  background: var(--accent-color);
+}
+
 /* Buttons */
 .btn {
   cursor: pointer;
