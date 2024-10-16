@@ -21,7 +21,7 @@ function NavBar() {
   }, []);
 
   return (
-    <header>
+    <header className="art">
       <nav className="nav collapsible">
         <Link className="nav__brand" to="/">
           <img src="src/assets/logo.svg" alt="Oil Change Reminder Logo" />
