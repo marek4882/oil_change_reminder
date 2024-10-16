@@ -1,18 +1,14 @@
 import { GoogleLogo } from "@phosphor-icons/react";
-import { Route } from "react-router-dom";
+import { Link, Route } from "react-router-dom";
 import SignUpPage from "./SignUpPage";
 function SignInPage() {
   return (
-    <section className="form-container">
+    <section className="block grid grid--1x2">
       <picture className="hero__image-container">
-        <img
-          className="hero__image"
-          src="src/assets/signinsignupimage.svg"
-          alt=""
-        />
+        <img className="hero__image" src="src\assets\hero_images.svg" alt="" />
       </picture>
-      <form className="form-signin">
-        <h1>Sign In</h1>
+      <form className="form-signin ">
+        <h2>Sign In</h2>
         <div className="form-group">
           <input
             className="form-control"
@@ -36,12 +32,11 @@ function SignInPage() {
         <button className="btn btn--accent btn--form" type="submit">
           Sign in
         </button>
-        <div className="btn btn--outline grid grid--1x2">
-          <GoogleLogo size={32} /> <a>Sign In by Google</a>
-        </div>
 
         <p className="muted">Copyright &copy; 2024</p>
-        <p className="signup-message">Don't have an account? </p>
+        <p className="signup-message">
+          Need to create an account? <Link to="/signup">Sign up</Link>
+        </p>
       </form>
     </section>
   );
