@@ -41,10 +41,7 @@ function SignInPage() {
         </div>
 
         <p className="muted">Copyright &copy; 2024</p>
-        <p className="signup-message">
-          Don't have an account?{" "}
-          <Route path="/signup" element={<SignUpPage />} />
-        </p>
+        <p className="signup-message">Don't have an account? </p>
       </form>
     </section>
   );
