@@ -4,7 +4,7 @@ import React from "react";
 function DocsPage() {
   return (
     <>
-      <section>
+      <section className="block">
         <details>
           <summary>Logowanie i rejestracja</summary>
           <h3>Rejestracja</h3>
