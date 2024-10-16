@@ -19,6 +19,7 @@ function App() {
           <Route path="/vehicle" element={<VehiclePage />} />
           <Route path="/docs" element={<DocsPage />} />
           <Route path="/form" element={<FormPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
         </Routes>
       </BrowserRouter>
     </>
