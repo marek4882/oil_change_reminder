@@ -20,6 +20,7 @@ body {
   font-size: 1.25rem;
   line-height: 1.4;
   color: var(--headings-color);
+  background: #f8f8f8;
 }
 h1,
 h2,
@@ -96,20 +97,19 @@ ul {
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 0 0.625rem;
-  margin: 1rem 0 0 0;
 }
 .nav__list {
   margin: 0;
   width: 100%;
 }
 .nav__item {
-  padding: 0.3125rem 1.25rem;
-  border-bottom: 1px solid #222;
+  padding: 0.8rem 1.25rem;
 }
 
 .nav__item > a {
   color: var(--primary-color);
   transition: color 0.3s;
+  border-bottom: 1px solid #222;
 }
 .nav__item > a:hover {
   color: var(--primary-color-hover);
@@ -190,7 +190,7 @@ ul {
   white-space: nowrap;
   text-align: center;
   margin: 0.625rem 0.2rem;
-  padding: 1rem 4vw;
+  padding: 1rem 3vw;
   border: 0;
   outline: 0;
   border-radius: 15px;
@@ -428,4 +428,12 @@ ul {
 
 .muted {
   color: #6c757d;
+}
+
+/* art */
+.art {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px rgb(219, 219, 219);
 }
