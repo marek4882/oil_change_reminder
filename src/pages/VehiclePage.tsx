@@ -2,48 +2,105 @@ import React from "react";
 
 function VehiclePage() {
   return (
-    <section className="form-container">
-      <picture className="hero__image-container">
-        <img
-          className="hero__image"
-          src="src/assets/signinsignupimage.svg"
-          alt=""
-        />
-      </picture>
-      <form className="form-signin">
-        <h1>Add your vehicle</h1>
-        <div className="form-group">
-          <input
-            className="form-control"
-            type="text"
-            name="brand"
-            placeholder="Brand"
-            maxLength={255}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <input
-            className="form-control"
-            type="text"
-            name="model"
-            placeholder="Model"
-            maxLength={255}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <select>
-            <option className="form-control" value="s">
-              jfdlsjfkdl
-            </option>
-          </select>
-        </div>
-        <button className="btn btn--accent btn--form" type="submit">
+    <>
+      <section className="block flex">
+        <header>
+          <h3 className="vehicle__header">Your Vechicle</h3>
+        </header>
+        <a href="" className="btn btn--accent ">
           + Add
-        </button>
-      </form>
-    </section>
+        </a>
+      </section>
+      <section className="block">
+        <article className="grid grid--1x3 sep">
+          <section>
+            <img
+              className="vehicle__image"
+              src="src\assets\ford-mustang.png"
+              alt=""
+            />
+          </section>
+          <section>
+            <p>
+              Nazwa: <span className="decoration">Nissan Gtr</span>
+            </p>
+            <p>
+              Numer rejestracyjny: <span className="decoration">KR 992N2</span>
+            </p>
+            <p>
+              120402KM Przebieg: <span className="decoration">120402KM</span>
+            </p>
+          </section>
+          <section>
+            <p>Kolejna Wymiana Oleju</p>
+            <p>
+              <span className="decoration">12.10.2024</span>
+            </p>
+          </section>
+          <section>
+            <button className="btn">Szczegóły</button>
+          </section>
+        </article>
+        <article className="grid grid--1x3 sep">
+          <section>
+            <img
+              className="vehicle__image"
+              src="src\assets\ford-mustang.png"
+              alt=""
+            />
+          </section>
+          <section>
+            <p>
+              Nazwa: <span className="decoration">Nissan Gtr</span>
+            </p>
+            <p>
+              Numer rejestracyjny: <span className="decoration">KR 992N2</span>
+            </p>
+            <p>
+              120402KM Przebieg: <span className="decoration">120402KM</span>
+            </p>
+          </section>
+          <section>
+            <p>Kolejna Wymiana Oleju</p>
+            <p>
+              <span className="decoration">12.10.2024</span>
+            </p>
+          </section>
+          <section>
+            <button className="btn">Szczegóły</button>
+          </section>
+        </article>
+        <article className="grid grid--1x3">
+          <section>
+            <img
+              className="vehicle__image"
+              src="src\assets\ford-mustang.png"
+              alt=""
+            />
+          </section>
+          <section>
+            <p>
+              Nazwa: <span className="decoration">Nissan Gtr</span>
+            </p>
+            <p>
+              Numer rejestracyjny: <span className="decoration">KR 992N2</span>
+            </p>
+            <p>
+              120402KM Przebieg: <span className="decoration">120402KM</span>
+            </p>
+          </section>
+          <section>
+            <p>Kolejna Wymiana Oleju</p>
+            <p>
+              <span className="decoration">12.10.2024</span>
+            </p>
+          </section>
+          <section>
+            <button className="btn">Szczegóły</button>
+          </section>
+        </article>
+      </section>
+    </>
   );
 }
 
