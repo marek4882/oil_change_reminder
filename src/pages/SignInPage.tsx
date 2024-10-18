@@ -12,9 +12,9 @@ function SignInPage() {
         <div className="form-group">
           <input
             className="form-control"
-            type="text"
-            name="login"
-            placeholder="Login"
+            type="email"
+            name="email"
+            placeholder="Email"
             maxLength={255}
             required
           />
