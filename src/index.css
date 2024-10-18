@@ -226,7 +226,7 @@ ul {
   padding-right: 3.75rem;
 }
 .btn--block {
-  width: 100%;
+  width: 50%;
   display: inline-block;
 }
 .btn--edit {
@@ -273,6 +273,7 @@ ul {
 @media screen and (min-width: 1024px) {
   .grid--1x3 {
     grid-template-columns: repeat(3, 1fr);
+    align-items: center;
   }
 }
 /* Hero */
@@ -440,4 +441,50 @@ ul {
   padding: 1rem;
   border-radius: 15px;
   box-shadow: 0px 0px 10px rgb(219, 219, 219);
+}
+/* Features */
+.feature {
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+}
+.feature:first-of-type {
+  margin-top: 2.5rem;
+}
+.feature__heading {
+  margin: 0.625rem 0;
+}
+.feature__image {
+  width: 100%;
+  height: 300px;
+}
+
+@media screen and (min-width: 768px) {
+  .feature:nth-of-type(even) .feature__content {
+    order: 2;
+  }
+}
+
+/* Vehicle */
+.vehicle__image {
+  border-radius: 15px;
+  object-fit: cover;
+  width: 50%;
+}
+.vehicle__header {
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.decoration {
+  font-weight: bold;
+}
+.sep {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #222;
 }
