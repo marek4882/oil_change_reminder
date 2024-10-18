@@ -28,7 +28,7 @@ function VehiclePage() {
               Numer rejestracyjny: <span className="decoration">KR 992N2</span>
             </p>
             <p>
-              120402KM Przebieg: <span className="decoration">120402KM</span>
+              Przebieg: <span className="decoration">120402KM</span>
             </p>
           </section>
           <section>
@@ -45,25 +45,25 @@ function VehiclePage() {
           <section>
             <img
               className="vehicle__image"
-              src="src\assets\ford-mustang.png"
+              src="src\assets\jeep-cherokee.png"
               alt=""
             />
           </section>
           <section>
             <p>
-              Nazwa: <span className="decoration">Nissan Gtr</span>
+              Nazwa: <span className="decoration">Jeep Cherokee</span>
             </p>
             <p>
-              Numer rejestracyjny: <span className="decoration">KR 992N2</span>
+              Numer rejestracyjny: <span className="decoration">KR 99NN3</span>
             </p>
             <p>
-              120402KM Przebieg: <span className="decoration">120402KM</span>
+              Przebieg: <span className="decoration">20500KM</span>
             </p>
           </section>
           <section>
             <p>Kolejna Wymiana Oleju</p>
             <p>
-              <span className="decoration">12.10.2024</span>
+              <span className="decoration">11.12.2024</span>
             </p>
           </section>
           <section>
@@ -74,7 +74,7 @@ function VehiclePage() {
           <section>
             <img
               className="vehicle__image"
-              src="src\assets\ford-mustang.png"
+              src="src\assets\ford-mustang-mach.png"
               alt=""
             />
           </section>
@@ -83,16 +83,16 @@ function VehiclePage() {
               Nazwa: <span className="decoration">Nissan Gtr</span>
             </p>
             <p>
-              Numer rejestracyjny: <span className="decoration">KR 992N2</span>
+              Numer rejestracyjny: <span className="decoration">KR 76N3R</span>
             </p>
             <p>
-              120402KM Przebieg: <span className="decoration">120402KM</span>
+              Przebieg: <span className="decoration">15000KM</span>
             </p>
           </section>
           <section>
             <p>Kolejna Wymiana Oleju</p>
             <p>
-              <span className="decoration">12.10.2024</span>
+              <span className="decoration">08.07.2024</span>
             </p>
           </section>
           <section>
