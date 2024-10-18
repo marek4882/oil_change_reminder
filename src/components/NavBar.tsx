@@ -39,9 +39,7 @@ function NavBar() {
           <li className="nav__item">
             <Link to="/Docs">Docs</Link>
           </li>
-          <li className="nav__item">
-            <Link to="/Form">Form</Link>
-          </li>
+
           <li className="nav__item">
             <Link to="/signin" className="btn btn--accent">
               Sign In
