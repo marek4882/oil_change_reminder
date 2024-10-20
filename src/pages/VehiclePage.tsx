@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function VehiclePage() {
   return (
@@ -38,7 +39,9 @@ function VehiclePage() {
             </p>
           </section>
           <section>
-            <button className="btn">Szczegóły</button>
+            <button className="btn">
+              <Link to="/detailsvehicle">Szczegóły</Link>
+            </button>
           </section>
         </article>
         <article className="grid grid--1x3 sep">
@@ -67,7 +70,9 @@ function VehiclePage() {
             </p>
           </section>
           <section>
-            <button className="btn">Szczegóły</button>
+            <button className="btn">
+              <Link to="/detailsvehicle">Szczegóły</Link>
+            </button>
           </section>
         </article>
         <article className="grid grid--1x3">
@@ -96,7 +101,11 @@ function VehiclePage() {
             </p>
           </section>
           <section>
-            <button className="btn">Szczegóły</button>
+            <button className="btn">
+              <Link className="links" to="/detailsvehicle">
+                Szczegóły
+              </Link>
+            </button>
           </section>
         </article>
       </section>
