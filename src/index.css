@@ -4,7 +4,9 @@
   --headings-color: #222222;
   --body-color: #505050;
   --edit-color: #ded57f;
+  --edit-color-hover: #f9ee8c;
   --delete-color: #de7f7f;
+  --delete-color-hover: #ff9393;
 }
 *,
 *::before,
@@ -47,6 +49,7 @@ p {
 a {
   text-decoration: none;
 }
+
 /* Lists */
 ul {
   list-style: none;
@@ -263,6 +266,7 @@ ul {
 /* Grid */
 .grid {
   display: grid;
+  gap: 1rem;
 }
 @media screen and (min-width: 768px) {
   .grid--1x2 {
@@ -470,6 +474,9 @@ ul {
   object-fit: cover;
   width: 50%;
 }
+.vehicle__image__large {
+  width: 80%;
+}
 .vehicle__header {
   margin: 0;
 }
@@ -487,4 +494,57 @@ ul {
 .sep {
   margin-bottom: 1rem;
   border-bottom: 2px solid #222;
+}
+
+/* Timeline */
+/* Container for the timeline */
+.timeline-container {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border-left: 2px solid #333; /* Timeline vertical line */
+}
+
+/* Individual timeline event */
+.timeline-event {
+  margin: 20px 0;
+  position: relative;
+  padding-left: 40px;
+}
+
+/* Date circle */
+.timeline-date {
+  position: absolute;
+  left: -25px;
+  width: 50px;
+  height: 50px;
+  background-color: #f39c12;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Content of the event */
+.timeline-content {
+  background-color: #f4f4f4;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.event-title {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.event-description {
+  margin: 5px 0 0;
+  font-size: 16px;
+  color: #666;
 }
