@@ -34,10 +34,13 @@ function NavBar() {
             <Link to="/">Home</Link>
           </li>
           <li className="nav__item">
-            <Link to="/Vehicle">My Vehicle</Link>
+            <Link to="/vehicle">My Vehicle</Link>
           </li>
           <li className="nav__item">
-            <Link to="/Docs">Docs</Link>
+            <Link to="/docs">Docs</Link>
+          </li>
+          <li className="nav__item">
+            <Link to="/crudformpage">crud</Link>
           </li>
 
           <li className="nav__item">
