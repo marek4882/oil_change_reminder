@@ -1,116 +1,75 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { LocalRepository } from "../api/ApiService";
 import { Link } from "react-router-dom";
+import { Car } from "../models/Car";
+import { CarManager } from "../services/CarService";
 
-function VehiclePage() {
+const VehiclePage: React.FC = () => {
+  const [cars, setCars] = useState<Car[]>([]);
+  const carManager = new CarManager(new LocalRepository());
+
+  // Fetch cars on component load
+  useEffect(() => {
+    const fetchedCars = carManager.readCars();
+    setCars(fetchedCars);
+  }, []);
+
   return (
-    <>
-      <section className="block flex">
-        <header>
-          <h3 className="vehicle__header">Your Vechicle</h3>
-        </header>
-        <a href="" className="btn btn--accent ">
-          + Add
-        </a>
-      </section>
-      <section className="block">
-        <article className="grid grid--1x3 sep">
-          <section>
-            <img
-              className="vehicle__image"
-              src="src\assets\ford-mustang.png"
-              alt=""
-            />
-          </section>
-          <section>
-            <p>
-              Nazwa: <span className="decoration">Nissan Gtr</span>
-            </p>
-            <p>
-              Numer rejestracyjny: <span className="decoration">KR 992N2</span>
-            </p>
-            <p>
-              Przebieg: <span className="decoration">120402KM</span>
-            </p>
-          </section>
-          <section>
-            <p>Kolejna Wymiana Oleju</p>
-            <p>
-              <span className="decoration">12.10.2024</span>
-            </p>
-          </section>
-          <section>
-            <button className="btn">
-              <Link to="/detailsvehicle">Szczegóły</Link>
-            </button>
-          </section>
-        </article>
-        <article className="grid grid--1x3 sep">
-          <section>
-            <img
-              className="vehicle__image"
-              src="src\assets\jeep-cherokee.png"
-              alt=""
-            />
-          </section>
-          <section>
-            <p>
-              Nazwa: <span className="decoration">Jeep Cherokee</span>
-            </p>
-            <p>
-              Numer rejestracyjny: <span className="decoration">KR 99NN3</span>
-            </p>
-            <p>
-              Przebieg: <span className="decoration">20500KM</span>
-            </p>
-          </section>
-          <section>
-            <p>Kolejna Wymiana Oleju</p>
-            <p>
-              <span className="decoration">11.12.2024</span>
-            </p>
-          </section>
-          <section>
-            <button className="btn">
-              <Link to="/detailsvehicle">Szczegóły</Link>
-            </button>
-          </section>
-        </article>
-        <article className="grid grid--1x3">
-          <section>
-            <img
-              className="vehicle__image"
-              src="src\assets\ford-mustang-mach.png"
-              alt=""
-            />
-          </section>
-          <section>
-            <p>
-              Nazwa: <span className="decoration">Nissan Gtr</span>
-            </p>
-            <p>
-              Numer rejestracyjny: <span className="decoration">KR 76N3R</span>
-            </p>
-            <p>
-              Przebieg: <span className="decoration">15000KM</span>
-            </p>
-          </section>
-          <section>
-            <p>Kolejna Wymiana Oleju</p>
-            <p>
-              <span className="decoration">08.07.2024</span>
-            </p>
-          </section>
-          <section>
-            <button className="btn">
-              <Link className="links" to="/detailsvehicle">
-                Szczegóły
-              </Link>
-            </button>
-          </section>
-        </article>
-      </section>
-    </>
+    <section className="block">
+      {cars.length > 0 ? (
+        cars.map((car) => (
+          <article className="grid grid--1x3 sep" key={car.id}>
+            <section>
+              <img
+                className="vehicle__image"
+                src={"srcassets\ford-mustang.png"}
+                alt={`${car.brand} ${car.model}`}
+              />
+            </section>
+            <section>
+              <p>
+                Nazwa:{" "}
+                <span className="decoration">
+                  {car.brand} {car.model}
+                </span>
+              </p>
+              <p>
+                Numer rejestracyjny:{" "}
+                <span className="decoration">{car.licensePlate}</span>
+              </p>
+              <p>
+                Przebieg:{" "}
+                <span className="decoration">
+                  {car.currentMilleage}
+                  {car.milleageUnit}
+                </span>
+              </p>
+            </section>
+            <section>
+              <p>Kolejna Wymiana Oleju</p>
+              <p>
+                <span className="decoration">
+                  {new Date(
+                    new Date(car.lastOilChange).getTime() +
+                      car.oilChangeIntervalKm * 1000 * 60 * 60 * 24
+                  ).toLocaleDateString()}
+                </span>
+              </p>
+              <button className="btn btn--edit">Edit</button>
+              <button className="btn btn--delete">Delete</button>
+            </section>
+            <section>
+              <button className="btn">
+                <Link to={`/detailsvehicle/${car.id}`}>Szczegóły</Link>
+              </button>
+            </section>
+          </article>
+        ))
+      ) : (
+        <p>No vehicles added yet.</p>
+      )}
+    </section>
   );
-}
+};
 
 export default VehiclePage;
