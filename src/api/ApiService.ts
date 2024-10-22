@@ -4,6 +4,9 @@ export interface Repository {
   // Cars
   readCars(): Car[];
   saveCars(cars: Car[]): void;
+
+  setCurrentCar(car: string): void;
+  getCurrentCarId(): string | null;
 }
 
 export class LocalRepository implements Repository {
