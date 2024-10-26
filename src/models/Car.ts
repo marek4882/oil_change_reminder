@@ -5,7 +5,7 @@ export interface Car {
   typeFuel: string;
   licensePlate: string;
   lastOilChange: Date;
-  oilChangeIntervalKm: number; //stała licza km do kolejnej wymiany oleju. Stała (15000km)
+  oilChangeIntervalKm: number;
   oilType: string;
   averageKmPerYear: number;
   currentMilleage: number;
