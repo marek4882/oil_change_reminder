@@ -69,8 +69,7 @@ const VehiclePage: React.FC = () => {
                 <p>
                   Przebieg:{" "}
                   <span className="decoration">
-                    {car.currentMilleage}
-                    {car.milleageUnit}
+                    {car.currentMilleage} {car.milleageUnit}
                   </span>
                 </p>
               </section>
