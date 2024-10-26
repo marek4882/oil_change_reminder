@@ -22,8 +22,11 @@ function App() {
           <Route path="/docs" element={<DocsPage />} />
           <Route path="/form" element={<FormPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/detailsvehicle" element={<DetailsVehiclePage />} />
-          <Route path="/crudformpage" element={<CrudFormPage />} />
+          <Route
+            path="/detailsvehicle/:carId"
+            element={<DetailsVehiclePage />}
+          />
+          <Route path="/crudformpage/" element={<CrudFormPage />} />
         </Routes>
       </BrowserRouter>
     </>
