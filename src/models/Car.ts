@@ -1,6 +1,14 @@
 export type TypeFuel = "Petrol" | "Diesel" | "Electric" | "Hybrid";
-export type Viscosity = "5W-30" | "10W-40" | "0W-20";
-export type OilType = "Synthetic" | "Conventional" | "Blend";
+export type Viscosity = "0W-20" | "5W-30" | "10W-40" | "15W-40" | "20W-50";
+export type OilType =
+  | "Synthetic"
+  | "Semi-synthetic"
+  | "Mineral"
+  | "Diesel-special"
+  | "Hybrid-special"
+  | "Conventional"
+  | "Electric-coolant"
+  | "Blend";
 export type MilleageUnit = "Km" | "Mi";
 
 export interface Car {
