@@ -428,8 +428,9 @@ ul {
 
 .form-control {
   border-radius: 5px;
-  padding: 1rem;
+  padding: 0.8rem;
   width: 100%;
+  margin-bottom: 0.3rem;
 }
 .btn--form {
   width: 100%;
