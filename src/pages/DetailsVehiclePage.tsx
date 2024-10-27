@@ -36,7 +36,7 @@ const DetailsVehiclePage: React.FC = () => {
 
   const handleEdit = () => {
     if (car) {
-      navigate(`/edit-car/${car.id}`);
+      navigate(`/crudformpage/${car.id}`);
     }
   };
 

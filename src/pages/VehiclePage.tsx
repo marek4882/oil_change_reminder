@@ -8,6 +8,7 @@ const VehiclePage: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const carManager = new CarManager(new LocalRepository());
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchedCars = carManager.readCars();
     setCars(fetchedCars);
@@ -19,7 +20,7 @@ const VehiclePage: React.FC = () => {
     console.log("Cars list refreshed: ", cars);
   };
 
-  const handleDeleteStory = (id: string) => {
+  const handleDeleteCar = (id: string) => {
     const deleted = carManager.deleteCar(id);
     if (deleted) {
       refreshCarList();
@@ -32,14 +33,17 @@ const VehiclePage: React.FC = () => {
     carManager.setCurrentCar(id);
     navigate(`/detailsvehicle/${id}`);
   };
+  const handleEditStory = (id: string) => {
+    carManager.setCurrentCar(id);
+    navigate(`/crudformpage/${id}`);
+  };
 
   return (
     <>
       <section className="block flex">
         <header>
-          <h3 className="vehicle__header">Your Vechicle</h3>
+          <h3 className="vehicle__header">Your Vehicle</h3>
         </header>
-
         <Link to={"/crudformpage"} className="btn btn--accent">
           + Add
         </Link>
@@ -78,10 +82,15 @@ const VehiclePage: React.FC = () => {
                 <p>
                   <span className="decoration"></span>
                 </p>
-                <button className="btn btn--edit">Edit</button>
+                <button
+                  className="btn btn--edit"
+                  onClick={() => handleEdit(car)}
+                >
+                  Edit
+                </button>
                 <button
                   className="btn btn--delete"
-                  onClick={() => handleDeleteStory(car.id)}
+                  onClick={() => handleDeleteCar(car.id)}
                 >
                   Delete
                 </button>
