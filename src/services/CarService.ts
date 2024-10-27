@@ -1,26 +1,29 @@
 import { LocalRepository, Repository } from "../api/ApiService";
-import { Car } from "../models/Car";
+import { Car, MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
 import { v4 as uuid } from "uuid";
 
 export class CarManager {
   private repository: Repository;
+
   constructor(repository: Repository) {
     this.repository = repository;
   }
 
-  //   Car Methods
+  // Car Methods
+
   // Add
   public addCar(
     brand: string,
     model: string,
-    typeFuel: string,
+    typeFuel: TypeFuel,
     licensePlate: string,
     lastOilChangeDate: Date,
     oilChangeIntervalKm: number,
-    oilType: string,
+    oilType: OilType,
+    viscosity: Viscosity,
     averageKmPerYear: number,
     currentMilleage: number,
-    milleageUnit: string,
+    milleageUnit: MilleageUnit,
     reminderBeforeChange: number
   ): void {
     const cars = this.repository.readCars();
@@ -33,6 +36,7 @@ export class CarManager {
       lastOilChange: new Date(),
       oilChangeIntervalKm,
       oilType,
+      viscosity,
       averageKmPerYear,
       currentMilleage,
       milleageUnit,
@@ -49,30 +53,34 @@ export class CarManager {
   public updateCar(
     id: string,
     newBrand: string,
-    newTypeFuel: string,
+    newTypeFuel: TypeFuel,
     newLicensePlate: string,
     newLastOilChange: Date,
     newOilChangeIntervalKm: number,
-    newOilType: string,
+    newOilType: OilType,
+    newViscosity: Viscosity,
     newAverageKmPerYear: number,
     newCurrentMilleage: number,
-    newMilleageUnit: string,
+    newMilleageUnit: MilleageUnit,
     newReminderBeforeChange: number
   ): boolean {
     const cars = this.repository.readCars();
     const index = cars.findIndex((car) => car.id === id);
     if (index !== -1) {
-      cars[index].brand = newBrand;
-      cars[index].typeFuel = newTypeFuel;
-      cars[index].licensePlate = newLicensePlate;
-      cars[index].lastOilChange = newLastOilChange;
-      cars[index].oilChangeIntervalKm = newOilChangeIntervalKm;
-      cars[index].oilType = newOilType;
-      cars[index].averageKmPerYear = newAverageKmPerYear;
-      cars[index].currentMilleage = newCurrentMilleage;
-      cars[index].milleageUnit = newMilleageUnit;
-      cars[index].reminderBeforeChange = newReminderBeforeChange;
-
+      cars[index] = {
+        ...cars[index],
+        brand: newBrand,
+        typeFuel: newTypeFuel,
+        licensePlate: newLicensePlate,
+        lastOilChange: newLastOilChange,
+        oilChangeIntervalKm: newOilChangeIntervalKm,
+        oilType: newOilType,
+        viscosity: newViscosity,
+        averageKmPerYear: newAverageKmPerYear,
+        currentMilleage: newCurrentMilleage,
+        milleageUnit: newMilleageUnit,
+        reminderBeforeChange: newReminderBeforeChange,
+      };
       this.repository.saveCars(cars);
       return true;
     }
@@ -82,7 +90,6 @@ export class CarManager {
   public deleteCar(id: string): boolean {
     const cars = this.repository.readCars();
     const index = cars.findIndex((car) => car.id === id);
-
     if (index !== -1) {
       cars.splice(index, 1);
       this.repository.saveCars(cars);
