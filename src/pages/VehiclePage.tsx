@@ -20,6 +20,10 @@ const VehiclePage: React.FC = () => {
     console.log("Cars list refreshed: ", cars);
   };
 
+  const handleEditCar = (id: string) => {
+    carManager.setCurrentCar(id);
+    navigate(`/crudformpage/${id}`);
+  };
   const handleDeleteCar = (id: string) => {
     const deleted = carManager.deleteCar(id);
     if (deleted) {
@@ -28,14 +32,9 @@ const VehiclePage: React.FC = () => {
       alert("Unable to delete story - story with the given ID does not exist.");
     }
   };
-
-  const handleOpenStory = (id: string) => {
+  const handleOpenCar = (id: string) => {
     carManager.setCurrentCar(id);
     navigate(`/detailsvehicle/${id}`);
-  };
-  const handleEditStory = (id: string) => {
-    carManager.setCurrentCar(id);
-    navigate(`/crudformpage/${id}`);
   };
 
   return (
@@ -84,7 +83,7 @@ const VehiclePage: React.FC = () => {
                 </p>
                 <button
                   className="btn btn--edit"
-                  onClick={() => handleEdit(car)}
+                  onClick={() => handleEditCar(car.id)}
                 >
                   Edit
                 </button>
@@ -96,7 +95,7 @@ const VehiclePage: React.FC = () => {
                 </button>
               </section>
               <section>
-                <button className="btn" onClick={() => handleOpenStory(car.id)}>
+                <button className="btn" onClick={() => handleOpenCar(car.id)}>
                   Szczegóły
                 </button>
               </section>

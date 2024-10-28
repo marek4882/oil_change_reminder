@@ -43,7 +43,7 @@ const DetailsVehiclePage: React.FC = () => {
   const handleDelete = () => {
     if (car) {
       carManager.deleteCar(car.id);
-      navigate("/"); // Redirect to home or cars list after deletion
+      navigate("/vehicle"); // Redirect to home or cars list after deletion
     }
   };
 

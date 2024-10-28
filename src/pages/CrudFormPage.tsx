@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CarManager } from "../services/CarService";
 import { LocalRepository } from "../api/ApiService";
 import { Car, MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
 
 const CrudFormPage: React.FC = () => {
+  const { carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
   const carManager = new CarManager(new LocalRepository());
 
@@ -44,7 +45,25 @@ const CrudFormPage: React.FC = () => {
   );
   const [reminderBeforeChange, setReminderBeforeChange] = useState(1000);
 
-  const [car, setCar] = useState<Car | null>(null);
+  useEffect(() => {
+    if (carId) {
+      const fetchedCar = carManager.readCars().find((car) => car.id === carId);
+      if (fetchedCar) {
+        setBrand(fetchedCar.brand);
+        setModel(fetchedCar.model);
+        setTypeFuel(fetchedCar.typeFuel);
+        setLicensePlate(fetchedCar.licensePlate);
+        setLastOilChange(fetchedCar.lastOilChange.toISOString().split("T")[0]);
+        setOilChangeIntervalKm(fetchedCar.oilChangeIntervalKm);
+        setOilType(fetchedCar.oilType);
+        setViscosity(fetchedCar.viscosity);
+        setAverageKmPerYear(fetchedCar.averageKmPerYear);
+        setCurrentMilleage(fetchedCar.currentMilleage);
+        setMileageUnit(fetchedCar.milleageUnit);
+        setReminderBeforeChange(fetchedCar.reminderBeforeChange);
+      }
+    }
+  }, [carId, carManager]);
 
   // Update oil type and reset viscosity when fuel type changes
   const handleFuelTypeChange = (newFuelType: TypeFuel) => {
@@ -69,32 +88,49 @@ const CrudFormPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const lastOilChangeDate = new Date(lastOilChange);
-    // Add car using CarManager
-    carManager.addCar(
-      brand,
-      model,
-      typeFuel,
-      licensePlate,
-      lastOilChangeDate,
-      oilChangeIntervalKm,
-      oilType,
-      viscosity!,
-      averageKmPerYear,
-      currentMilleage,
-      mileageUnit,
-      reminderBeforeChange
-    );
-    // Redirect after adding the car
+    if (carId) {
+      // Update car
+      carManager.updateCar(
+        carId,
+        brand,
+        typeFuel,
+        licensePlate,
+        lastOilChangeDate,
+        oilChangeIntervalKm,
+        oilType,
+        viscosity!,
+        averageKmPerYear,
+        currentMilleage,
+        mileageUnit,
+        reminderBeforeChange
+      );
+    } else {
+      // Add new car
+      carManager.addCar(
+        brand,
+        model,
+        typeFuel,
+        licensePlate,
+        lastOilChangeDate,
+        oilChangeIntervalKm,
+        oilType,
+        viscosity!,
+        averageKmPerYear,
+        currentMilleage,
+        mileageUnit,
+        reminderBeforeChange
+      );
+    }
+    // Redirect after submission
     navigate("/vehicle");
   };
-
   return (
     <section className="block grid grid--1x2">
       <picture className="hero__image-container">
         <img className="hero__image" src="src/assets/hero_images.svg" alt="" />
       </picture>
       <form onSubmit={handleSubmit}>
-        <h2>add</h2>
+        <h2>{carId ? "Edit Car" : "Add New Car"}</h2>
         {/* Brand Field */}
         <div>
           <label>Brand:</label>
