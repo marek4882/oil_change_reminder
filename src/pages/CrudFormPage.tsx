@@ -2,14 +2,118 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CarManager } from "../services/CarService";
 import { LocalRepository } from "../api/ApiService";
-import { Car, MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
+import { MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
 
 const CrudFormPage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
-  const navigate = useNavigate();
+  const [brand, setBrand] = useState("");
+  const [model, setModel] = useState("");
+  const [typeFuel, setTypeFuel] = useState<TypeFuel>("Petrol");
+  const [licensePlate, setLicensePlate] = useState("");
+  const [lastOilChange, setLastOilChange] = useState("");
+  const [oilChangeIntervalKm, setOilChangeIntervalKm] = useState(15000);
+  const [oilType, setOilType] = useState<OilType>("Synthetic");
+  const [viscosity, setViscosity] = useState<Viscosity | null>(null);
+  const [averageKmPerYear, setAverageKmPerYear] = useState(0);
+  const [currentMilleage, setCurrentMilleage] = useState(0);
+  const [mileageUnit, setMileageUnit] = useState<MilleageUnit>("Km");
+  const [averageMileageLabel, setAverageMileageLabel] = useState(
+    "Average Km per Year"
+  );
+  const [reminderBeforeChange, setReminderBeforeChange] = useState(1000);
   const carManager = new CarManager(new LocalRepository());
+  const navigate = useNavigate();
 
-  // Define fuel types, oil types, and viscosity mapping
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  useEffect(() => {
+    if (carId && !isDataLoaded) {
+      const cars = carManager.readCars();
+      const fetchedCar = cars.find((car) => car.id === carId);
+
+      if (fetchedCar) {
+        setBrand(fetchedCar.brand);
+        setModel(fetchedCar.model);
+        setTypeFuel(fetchedCar.typeFuel);
+        setLicensePlate(fetchedCar.licensePlate);
+
+        const lastOilChangeDate = new Date(fetchedCar.lastOilChange);
+        setLastOilChange(
+          isNaN(lastOilChangeDate.getTime())
+            ? ""
+            : lastOilChangeDate.toISOString().split("T")[0]
+        );
+
+        setOilChangeIntervalKm(fetchedCar.oilChangeIntervalKm);
+        setOilType(fetchedCar.oilType);
+        setViscosity(fetchedCar.viscosity);
+        setAverageKmPerYear(fetchedCar.averageKmPerYear);
+        setCurrentMilleage(fetchedCar.currentMilleage);
+        setMileageUnit(fetchedCar.milleageUnit);
+        setReminderBeforeChange(fetchedCar.reminderBeforeChange);
+      } else {
+        console.log("Car not found for ID:", carId);
+      }
+      setIsDataLoaded(true);
+    }
+  }, [carId, carManager, isDataLoaded]);
+
+  const handleFuelTypeChange = (newFuelType: TypeFuel) => {
+    setTypeFuel(newFuelType);
+    setOilType(oilTypes[newFuelType][0]);
+    setViscosity(oilToViscosityMap[oilTypes[newFuelType][0]][0] || null);
+  };
+
+  const handleOilTypeChange = (newOilType: OilType) => {
+    setOilType(newOilType);
+    setViscosity(oilToViscosityMap[newOilType][0] || null);
+  };
+
+  const handleMileageUnitChange = (newUnit: MilleageUnit) => {
+    setMileageUnit(newUnit);
+    setAverageMileageLabel(`Average ${newUnit} per Year`);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const lastOilChangeDate = new Date(lastOilChange);
+    if (carId) {
+      carManager.updateCar(
+        carId,
+        brand,
+        model,
+        typeFuel,
+        licensePlate,
+        lastOilChangeDate,
+        oilChangeIntervalKm,
+        oilType,
+        viscosity!,
+        averageKmPerYear,
+        currentMilleage,
+        mileageUnit,
+        reminderBeforeChange
+      );
+    } else {
+      carManager.addCar(
+        brand,
+        model,
+        typeFuel,
+        licensePlate,
+        lastOilChangeDate,
+        oilChangeIntervalKm,
+        oilType,
+        viscosity!,
+        averageKmPerYear,
+        currentMilleage,
+        mileageUnit,
+        reminderBeforeChange
+      );
+    }
+
+    navigate("/vehicle");
+  };
+
   const fuelTypes = ["Petrol", "Diesel", "Hybrid", "Electric"] as const;
   const oilTypes: Record<TypeFuel, OilType[]> = {
     Petrol: ["Synthetic", "Semi-synthetic", "Mineral"],
@@ -28,109 +132,13 @@ const CrudFormPage: React.FC = () => {
     Blend: [],
   };
 
-  // Form state for each car attribute
-  const [brand, setBrand] = useState("");
-  const [model, setModel] = useState("");
-  const [typeFuel, setTypeFuel] = useState<TypeFuel>("Petrol");
-  const [licensePlate, setLicensePlate] = useState("");
-  const [lastOilChange, setLastOilChange] = useState("");
-  const [oilChangeIntervalKm, setOilChangeIntervalKm] = useState(15000);
-  const [oilType, setOilType] = useState<OilType>("Synthetic");
-  const [viscosity, setViscosity] = useState<Viscosity | null>(null);
-  const [averageKmPerYear, setAverageKmPerYear] = useState(0);
-  const [currentMilleage, setCurrentMilleage] = useState(0);
-  const [mileageUnit, setMileageUnit] = useState<MilleageUnit>("Km");
-  const [averageMileageLabel, setAverageMileageLabel] = useState(
-    "Average Km per Year"
-  );
-  const [reminderBeforeChange, setReminderBeforeChange] = useState(1000);
-
-  useEffect(() => {
-    if (carId) {
-      const fetchedCar = carManager.readCars().find((car) => car.id === carId);
-      if (fetchedCar) {
-        setBrand(fetchedCar.brand);
-        setModel(fetchedCar.model);
-        setTypeFuel(fetchedCar.typeFuel);
-        setLicensePlate(fetchedCar.licensePlate);
-        setLastOilChange(fetchedCar.lastOilChange.toISOString().split("T")[0]);
-        setOilChangeIntervalKm(fetchedCar.oilChangeIntervalKm);
-        setOilType(fetchedCar.oilType);
-        setViscosity(fetchedCar.viscosity);
-        setAverageKmPerYear(fetchedCar.averageKmPerYear);
-        setCurrentMilleage(fetchedCar.currentMilleage);
-        setMileageUnit(fetchedCar.milleageUnit);
-        setReminderBeforeChange(fetchedCar.reminderBeforeChange);
-      }
-    }
-  }, [carId, carManager]);
-
-  // Update oil type and reset viscosity when fuel type changes
-  const handleFuelTypeChange = (newFuelType: TypeFuel) => {
-    setTypeFuel(newFuelType);
-    setOilType(oilTypes[newFuelType][0]);
-    setViscosity(oilToViscosityMap[oilTypes[newFuelType][0]][0] || null);
-  };
-
-  // Update viscosity when oil type changes
-  const handleOilTypeChange = (newOilType: OilType) => {
-    setOilType(newOilType);
-    setViscosity(oilToViscosityMap[newOilType][0] || null);
-  };
-
-  // Handle mileage unit change
-  const handleMileageUnitChange = (newUnit: MilleageUnit) => {
-    setMileageUnit(newUnit);
-    setAverageMileageLabel(`Average ${newUnit} per Year`);
-  };
-
-  // Form submission handler
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const lastOilChangeDate = new Date(lastOilChange);
-    if (carId) {
-      // Update car
-      carManager.updateCar(
-        carId,
-        brand,
-        typeFuel,
-        licensePlate,
-        lastOilChangeDate,
-        oilChangeIntervalKm,
-        oilType,
-        viscosity!,
-        averageKmPerYear,
-        currentMilleage,
-        mileageUnit,
-        reminderBeforeChange
-      );
-    } else {
-      // Add new car
-      carManager.addCar(
-        brand,
-        model,
-        typeFuel,
-        licensePlate,
-        lastOilChangeDate,
-        oilChangeIntervalKm,
-        oilType,
-        viscosity!,
-        averageKmPerYear,
-        currentMilleage,
-        mileageUnit,
-        reminderBeforeChange
-      );
-    }
-    // Redirect after submission
-    navigate("/vehicle");
-  };
   return (
     <section className="block grid grid--1x2">
       <picture className="hero__image-container">
         <img className="hero__image" src="src/assets/hero_images.svg" alt="" />
       </picture>
       <form onSubmit={handleSubmit}>
-        <h2>{carId ? "Edit Car" : "Add New Car"}</h2>
+        <h2>{carId ? "Edit Car" : "+ Add Car"}</h2>
         {/* Brand Field */}
         <div>
           <label>Brand:</label>
@@ -198,6 +206,7 @@ const CrudFormPage: React.FC = () => {
             type="number"
             value={oilChangeIntervalKm}
             onChange={(e) => setOilChangeIntervalKm(Number(e.target.value))}
+            disabled
             required
           />
         </div>
@@ -281,7 +290,7 @@ const CrudFormPage: React.FC = () => {
           />
         </div>
         <button className="btn btn--accent" type="submit">
-          + Add Car
+          {carId ? "Edit Car" : "+ Add Car"}
         </button>
       </form>
     </section>
