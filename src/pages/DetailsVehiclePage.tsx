@@ -19,19 +19,19 @@ const DetailsVehiclePage: React.FC = () => {
       carManager.setCurrentCar(carId);
       refreshCarDetails();
     }
-  }, [carId]); // Add carId to dependency array
+  }, [carId]);
 
   const refreshCarDetails = () => {
     const cars = carManager.readCars();
     const foundCar = cars.find((car) => car.id === carId);
 
     if (foundCar) {
-      // Ensure lastOilChange is a Date object
       foundCar.lastOilChange = new Date(foundCar.lastOilChange);
     }
 
     setCar(foundCar || null);
     setLoading(false);
+    console.log("id of the car", foundCar, "car", cars);
   };
 
   const handleEdit = () => {
