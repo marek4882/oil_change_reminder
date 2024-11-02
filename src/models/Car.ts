@@ -25,4 +25,5 @@ export interface Car {
   currentMilleage: number;
   milleageUnit: MilleageUnit;
   reminderBeforeChange: number;
+  nextOilChangeDate?: Date;
 }
