@@ -3,6 +3,7 @@ import { LocalRepository } from "../api/ApiService";
 import { Link, useNavigate } from "react-router-dom";
 import { Car } from "../models/Car";
 import { CarManager } from "../services/CarService";
+import { format } from "date-fns";
 
 const VehiclePage: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
@@ -14,27 +15,16 @@ const VehiclePage: React.FC = () => {
     setCars(fetchedCars);
   }, []);
 
-  const refreshCarList = () => {
-    const cars = carManager.readCars();
-    setCars(cars);
-    console.log("Cars list refreshed: ", cars);
-  };
-
   const handleEditCar = (id: string) => {
     carManager.setCurrentCar(id);
     navigate(`/crudformpage/${id}`);
   };
+
   const handleDeleteCar = (id: string) => {
     const deleted = carManager.deleteCar(id);
     if (deleted) {
-      refreshCarList();
-    } else {
-      alert("Unable to delete story - story with the given ID does not exist.");
+      setCars(carManager.readCars());
     }
-  };
-  const handleOpenCar = (id: string) => {
-    carManager.setCurrentCar(id);
-    navigate(`/detailsvehicle/${id}`);
   };
 
   return (
@@ -75,12 +65,16 @@ const VehiclePage: React.FC = () => {
                     {car.currentMilleage} {car.milleageUnit}
                   </span>
                 </p>
+                <p>
+                  Kolejna Wymiana Oleju:
+                  <span className="decoration">
+                    {car.nextOilChangeDate
+                      ? format(new Date(car.nextOilChangeDate), "yyyy-MM-dd")
+                      : "Brak danych"}
+                  </span>
+                </p>
               </section>
               <section>
-                <p>Kolejna Wymiana Oleju</p>
-                <p>
-                  <span className="decoration"></span>
-                </p>
                 <button
                   className="btn btn--edit"
                   onClick={() => handleEditCar(car.id)}
@@ -92,11 +86,6 @@ const VehiclePage: React.FC = () => {
                   onClick={() => handleDeleteCar(car.id)}
                 >
                   Delete
-                </button>
-              </section>
-              <section>
-                <button className="btn" onClick={() => handleOpenCar(car.id)}>
-                  Szczegóły
                 </button>
               </section>
             </article>
