@@ -27,7 +27,7 @@ function App() {
             element={<DetailsVehiclePage />}
           />
           <Route path="/crudformpage" element={<CrudFormPage />} />
-          <Route path="/crudformpage/:id" element={<CrudFormPage />} />
+          <Route path="/crudformpage/:carId" element={<CrudFormPage />} />
         </Routes>
       </BrowserRouter>
     </>
