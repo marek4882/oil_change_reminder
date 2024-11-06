@@ -13,17 +13,28 @@ const VehiclePage: React.FC = () => {
   useEffect(() => {
     const fetchedCars = carManager.readCars();
     setCars(fetchedCars);
+    console.log(fetchedCars);
   }, []);
-
+  const refreshCarList = () => {
+    const cars = carManager.readCars();
+    setCars(cars);
+    console.log("Cars list refreshed: ", cars);
+  };
   const handleEditCar = (id: string) => {
     carManager.setCurrentCar(id);
     navigate(`/crudformpage/${id}`);
+  };
+  const handleOpenCar = (id: string) => {
+    carManager.setCurrentCar(id);
+    navigate(`/detailsvehicle/${id}`);
   };
 
   const handleDeleteCar = (id: string) => {
     const deleted = carManager.deleteCar(id);
     if (deleted) {
-      setCars(carManager.readCars());
+      refreshCarList();
+    } else {
+      alert("Unable to delete story - story with the given ID does not exist.");
     }
   };
 
@@ -86,6 +97,9 @@ const VehiclePage: React.FC = () => {
                   onClick={() => handleDeleteCar(car.id)}
                 >
                   Delete
+                </button>
+                <button className="btn" onClick={() => handleOpenCar(car.id)}>
+                  Szczegóły
                 </button>
               </section>
             </article>
