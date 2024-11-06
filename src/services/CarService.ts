@@ -48,12 +48,48 @@ export class CarManager {
       currentMilleage,
       milleageUnit,
       reminderBeforeChange,
-      nextOilChangeDate, // dodajemy obliczoną datę
+      nextOilChangeDate,
+      oilChangeHistory: [
+        {
+          date: lastOilChangeDate,
+          oilType,
+          mileage: currentMilleage,
+        },
+      ],
     };
     cars.push(car);
     this.repository.saveCars(cars);
   }
 
+  public addOilChange(
+    carId: string,
+    date: Date,
+    oilType: OilType,
+    mileage: number
+  ): boolean {
+    const cars = this.repository.readCars();
+    const car = cars.find((car) => car.id === carId);
+
+    if (!car) {
+      console.error(`Car with ID ${carId} not found`); // Log this
+      return false;
+    }
+
+    car.oilChangeHistory = car.oilChangeHistory || [];
+    car.oilChangeHistory.push({ date, oilType, mileage });
+
+    // Optionally, update last oil change details and next oil change date
+    car.lastOilChange = date;
+    car.currentMilleage = mileage;
+    car.nextOilChangeDate = calculateNextOilChangeDate(
+      date,
+      car.averageKmPerYear,
+      car.oilChangeIntervalKm
+    );
+
+    this.repository.saveCars(cars);
+    return true;
+  }
   public updateCar(
     id: string,
     newBrand: string,
@@ -73,14 +109,28 @@ export class CarManager {
     const index = cars.findIndex((car) => car.id === id);
 
     if (index !== -1) {
+      const car = cars[index];
+
+      // Convert lastOilChange to Date object if necessary
+      const lastOilChangeDate =
+        car.lastOilChange instanceof Date
+          ? car.lastOilChange
+          : new Date(car.lastOilChange);
+
+      // Check if there's a change in the oil change date
+      const isOilChangeDateUpdated =
+        lastOilChangeDate.getTime() !== newLastOilChange.getTime();
+
+      // Calculate next oil change date based on the new date and parameters
       const nextOilChangeDate = calculateNextOilChangeDate(
         newLastOilChange,
         newAverageKmPerYear,
         newOilChangeIntervalKm
       );
 
+      // Update the car details
       cars[index] = {
-        ...cars[index],
+        ...car,
         brand: newBrand,
         model: newModel,
         typeFuel: newTypeFuel,
@@ -93,8 +143,31 @@ export class CarManager {
         currentMilleage: newCurrentMilleage,
         milleageUnit: newMilleageUnit,
         reminderBeforeChange: newReminderBeforeChange,
-        nextOilChangeDate, // zapisujemy nową datę wymiany
+        nextOilChangeDate,
       };
+
+      // Update oil change history if the date has changed
+      if (isOilChangeDateUpdated) {
+        cars[index].oilChangeHistory = car.oilChangeHistory || [];
+
+        // If history exists, update the last record; otherwise, add a new record
+        if (cars[index].oilChangeHistory.length > 0) {
+          const lastRecord =
+            cars[index].oilChangeHistory[
+              cars[index].oilChangeHistory.length - 1
+            ];
+          lastRecord.date = newLastOilChange;
+          lastRecord.mileage = newCurrentMilleage;
+        } else {
+          cars[index].oilChangeHistory.push({
+            date: newLastOilChange,
+            oilType: newOilType,
+            mileage: newCurrentMilleage,
+          });
+        }
+      }
+
+      // Save the updated car list
       this.repository.saveCars(cars);
       return true;
     }
