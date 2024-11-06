@@ -11,6 +11,13 @@ export type OilType =
   | "Blend";
 export type MilleageUnit = "Km" | "Mi";
 
+export interface OilChangeRecord {
+  date: Date;
+  oilType: OilType;
+
+  mileage: number;
+}
+
 export interface Car {
   id: string;
   brand: string;
@@ -26,4 +33,5 @@ export interface Car {
   milleageUnit: MilleageUnit;
   reminderBeforeChange: number;
   nextOilChangeDate?: Date;
+  oilChangeHistory?: OilChangeRecord[];
 }
