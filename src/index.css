@@ -504,7 +504,6 @@ ul {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  border-left: 2px solid #333; /* Timeline vertical line */
 }
 
 /* Individual timeline event */
@@ -517,6 +516,7 @@ ul {
 /* Date circle */
 .timeline-date {
   position: absolute;
+  top: 34px;
   left: -25px;
   width: 50px;
   height: 50px;
@@ -547,5 +547,7 @@ ul {
 .event-description {
   margin: 5px 0 0;
   font-size: 16px;
-  color: #666;
+  color: #4b4b4b;
+  display: flex;
+  gap: 0.2rem;
 }
