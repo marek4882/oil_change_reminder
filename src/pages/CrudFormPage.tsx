@@ -51,6 +51,7 @@ const CrudFormPage: React.FC = () => {
         setCurrentMilleage(fetchedCar.currentMilleage);
         setMileageUnit(fetchedCar.milleageUnit);
         setReminderBeforeChange(fetchedCar.reminderBeforeChange);
+        console.log(fetchedCar);
       } else {
         console.log("Car not found for ID:", carId);
       }
