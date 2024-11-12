@@ -13,23 +13,21 @@ export class LocalRepository implements Repository {
   private static readonly carsStorageKey = "cars";
   private static readonly currentCarKey = "currentCar";
 
-  //   Cars
   public readCars(): Car[] {
-    const projectsData = localStorage.getItem(LocalRepository.carsStorageKey);
-    return projectsData ? JSON.parse(projectsData) : [];
+    const carsData = localStorage.getItem(LocalRepository.carsStorageKey);
+    return carsData ? JSON.parse(carsData) : [];
   }
 
   public saveCars(cars: Car[]): void {
     localStorage.setItem(LocalRepository.carsStorageKey, JSON.stringify(cars));
   }
 
+  // Method for current car setting and retrieval remains unchanged
   public setCurrentCar(id: string): void {
     localStorage.setItem(LocalRepository.currentCarKey, id);
   }
 
   public getCurrentCarId(): string | null {
-    const currentCarId = localStorage.getItem(LocalRepository.currentCarKey);
-    console.log(`Current Car ID: ${currentCarId}`);
-    return currentCarId;
+    return localStorage.getItem(LocalRepository.currentCarKey);
   }
 }

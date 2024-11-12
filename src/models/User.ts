@@ -3,7 +3,6 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  onwerCarIds?: string[];
 }
 
 export const mockUser: User[] = [
@@ -12,6 +11,5 @@ export const mockUser: User[] = [
     name: "Marek",
     email: "cwioro200@wp.pl",
     password: "1234",
-    onwerCarIds: ["1", "2"],
   },
 ];

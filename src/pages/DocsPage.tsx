@@ -6,20 +6,22 @@ function DocsPage() {
     <>
       <section className="block">
         <details>
-          <summary>Logowanie i rejestracja</summary>
-          <h3>Rejestracja</h3>
+          <summary>Login and registration</summary>
+          <h3>Registration</h3>
           <ol>
-            <li>Wejdź na stronę główną aplikacji.</li>
+            <li>Go to the home page of the application.</li>
             <li>
-              Kliknij przycisk <strong>Zarejestruj się</strong>.
-            </li>
-            <li>Wprowadź swoje dane, takie jak adres e-mail oraz hasło.</li>
-            <li>
-              Po wprowadzeniu danych, kliknij <strong>Zarejestruj się</strong>.
-              Otrzymasz e-mail z potwierdzeniem rejestracji.
+              Click the <strong>Register button.</strong>.
             </li>
             <li>
-              Po potwierdzeniu e-maila możesz zalogować się na swoje konto.
+              Enter your information, such as your email address and password.
+            </li>
+            <li>
+              After entering your data, click Register. You will receive a
+              registration confirmation e-mail.
+            </li>
+            <li>
+              After confirming the e-mail, you can log in to your account.
             </li>
           </ol>
         </details>

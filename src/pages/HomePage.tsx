@@ -13,7 +13,9 @@ function HomePage() {
               to change the oil in your vehicle. We'll do it for you!
             </p>
 
-            <a className="btn btn--accent ">Start Now</a>
+            <Link to="/signin" className="btn btn--accent ">
+              Start Now
+            </Link>
           </header>
           <picture className="hero__image-container">
             <img
@@ -70,7 +72,9 @@ function HomePage() {
       <div className="block block--dark  hero">
         <header className="block__header">
           <h2 className="block__header">See More Features</h2>
-          <a className="btn btn--accent ">Start Now</a>
+          <Link to="/signin" className="btn btn--accent ">
+            Start Now
+          </Link>
         </header>
       </div>
 

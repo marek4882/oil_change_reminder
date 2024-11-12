@@ -1,4 +1,4 @@
-import { LocalRepository, Repository } from "../api/ApiService";
+import { Repository } from "../api/ApiService";
 import { Car, MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
 import { v4 as uuid } from "uuid";
 import { calculateNextOilChangeDate } from "./CalculateOilChange";
@@ -24,8 +24,7 @@ export class CarManager {
     viscosity: Viscosity,
     averageKmPerYear: number,
     currentMilleage: number,
-    milleageUnit: MilleageUnit,
-    reminderBeforeChange: number
+    milleageUnit: MilleageUnit
   ): void {
     const cars = this.repository.readCars();
     const nextOilChangeDate = calculateNextOilChangeDate(
@@ -47,7 +46,6 @@ export class CarManager {
       averageKmPerYear,
       currentMilleage,
       milleageUnit,
-      reminderBeforeChange,
       nextOilChangeDate,
       oilChangeHistory: [
         {
@@ -102,8 +100,7 @@ export class CarManager {
     newViscosity: Viscosity,
     newAverageKmPerYear: number,
     newCurrentMilleage: number,
-    newMilleageUnit: MilleageUnit,
-    newReminderBeforeChange: number
+    newMilleageUnit: MilleageUnit
   ): boolean {
     const cars = this.repository.readCars();
     const index = cars.findIndex((car) => car.id === id);
@@ -142,7 +139,6 @@ export class CarManager {
         averageKmPerYear: newAverageKmPerYear,
         currentMilleage: newCurrentMilleage,
         milleageUnit: newMilleageUnit,
-        reminderBeforeChange: newReminderBeforeChange,
         nextOilChangeDate,
       };
 

@@ -61,25 +61,26 @@ const VehiclePage: React.FC = () => {
               </section>
               <section>
                 <p>
-                  Nazwa:{" "}
+                  Car name:{" "}
                   <span className="decoration">
                     {car.brand} {car.model}
                   </span>
                 </p>
                 <p>
-                  Numer rejestracyjny:{" "}
+                  Number plate:{" "}
                   <span className="decoration">{car.licensePlate}</span>
                 </p>
                 <p>
-                  Przebieg:{" "}
+                  Milleage:{" "}
                   <span className="decoration">
                     {car.currentMilleage} {car.milleageUnit}
                   </span>
                 </p>
                 <p>
-                  Kolejna Wymiana Oleju:
+                  Next oil change:
                   <span className="decoration">
-                    {car.nextOilChangeDate
+                    {car.nextOilChangeDate &&
+                    typeof car.nextOilChangeDate === "string"
                       ? format(new Date(car.nextOilChangeDate), "yyyy-MM-dd")
                       : "Brak danych"}
                   </span>
@@ -99,7 +100,7 @@ const VehiclePage: React.FC = () => {
                   Delete
                 </button>
                 <button className="btn" onClick={() => handleOpenCar(car.id)}>
-                  Szczegóły
+                  Details
                 </button>
               </section>
             </article>

@@ -125,16 +125,19 @@ const DetailsVehiclePage: React.FC = () => {
                 </span>
               </p>
               <p>
-                Oil Type: <span className="decoration">{car.oilType}</span>
+                Oil Type:{" "}
+                <span className="decoration">
+                  {car.oilType} {car.viscosity}
+                </span>
               </p>
               <p>
-                Przebieg:{" "}
+                Milleage:{" "}
                 <span className="decoration">
                   {car.currentMilleage} {car.milleageUnit}
                 </span>
               </p>
               <p>
-                Kolejna Wymiana Oleju:
+                Next oil change:
                 <span className="decoration">
                   {car.nextOilChangeDate
                     ? format(new Date(car.nextOilChangeDate), "yyyy-MM-dd")
@@ -163,17 +166,17 @@ const DetailsVehiclePage: React.FC = () => {
                     </div>
                     <div className="timeline-content">
                       <p className="event-description">
-                        <Calendar size={20} color="black" /> Data Wymiany Oleju:{" "}
+                        <Calendar size={20} color="black" /> Oil Change Date:{" "}
                         <span className="decoration">
                           {format(new Date(record.date), "dd.MM.yyyy")}
                         </span>
                       </p>
                       <p className="event-description">
-                        <Drop size={20} color="black" /> Typ Oleju:{" "}
+                        <Drop size={20} color="black" /> Oil Type:{" "}
                         <span className="decoration">{record.oilType} </span>
                       </p>
                       <p className="event-description">
-                        <Gauge size={20} color="black" /> Przebieg:{" "}
+                        <Gauge size={20} color="black" /> Milleage:{" "}
                         <span className="decoration">{record.mileage}</span>
                       </p>
                     </div>

@@ -14,7 +14,6 @@ export type MilleageUnit = "Km" | "Mi";
 export interface OilChangeRecord {
   date: Date;
   oilType: OilType;
-
   mileage: number;
 }
 
@@ -31,7 +30,6 @@ export interface Car {
   averageKmPerYear: number;
   currentMilleage: number;
   milleageUnit: MilleageUnit;
-  reminderBeforeChange: number;
   nextOilChangeDate?: Date;
   oilChangeHistory?: OilChangeRecord[];
 }

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CarManager } from "../services/CarService";
 import { LocalRepository } from "../api/ApiService";
 import { MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
+import { UserService } from "../services/UserService";
 
 const CrudFormPage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
@@ -20,8 +21,8 @@ const CrudFormPage: React.FC = () => {
   const [averageMileageLabel, setAverageMileageLabel] = useState(
     "Average Km per Year"
   );
-  const [reminderBeforeChange, setReminderBeforeChange] = useState(1000);
   const carManager = new CarManager(new LocalRepository());
+
   const navigate = useNavigate();
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -50,7 +51,6 @@ const CrudFormPage: React.FC = () => {
         setAverageKmPerYear(fetchedCar.averageKmPerYear);
         setCurrentMilleage(fetchedCar.currentMilleage);
         setMileageUnit(fetchedCar.milleageUnit);
-        setReminderBeforeChange(fetchedCar.reminderBeforeChange);
         console.log(fetchedCar);
       } else {
         console.log("Car not found for ID:", carId);
@@ -92,8 +92,7 @@ const CrudFormPage: React.FC = () => {
         viscosity!,
         averageKmPerYear,
         currentMilleage,
-        mileageUnit,
-        reminderBeforeChange
+        mileageUnit
       );
     } else {
       carManager.addCar(
@@ -107,8 +106,7 @@ const CrudFormPage: React.FC = () => {
         viscosity!,
         averageKmPerYear,
         currentMilleage,
-        mileageUnit,
-        reminderBeforeChange
+        mileageUnit
       );
     }
 
@@ -279,17 +277,7 @@ const CrudFormPage: React.FC = () => {
             required
           />
         </div>
-        {/* Reminder Before Change Field */}
-        <div>
-          <label>Reminder Before Oil Change (KM):</label>
-          <input
-            className="form-control"
-            type="number"
-            value={reminderBeforeChange}
-            onChange={(e) => setReminderBeforeChange(Number(e.target.value))}
-            required
-          />
-        </div>
+
         <button className="btn btn--accent" type="submit">
           {carId ? "Edit Car" : "+ Add Car"}
         </button>
