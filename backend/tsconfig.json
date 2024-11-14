@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2016",                               // Kompilacja do ES2016
+    "module": "commonjs",                             // Moduł CommonJS, zgodny z Node.js
+    "rootDir": "./src",                               // Główny katalog źródłowy
+    "outDir": "./dist",                               // Katalog na skompilowane pliki
+    "esModuleInterop": true,                          // Obsługa importowania modułów CommonJS
+    "forceConsistentCasingInFileNames": true,         // Wymuszenie spójności wielkości liter w nazwach plików
+    "strict": true,                                   // Ścisła kontrola typów
+    "skipLibCheck": true,                             // Pominięcie sprawdzania typów w plikach zewnętrznych
+    "moduleResolution": "node",                       // Rozdzielanie modułów zgodne z Node.js
+    "resolveJsonModule": true,                        // Umożliwia importowanie plików .json
+    "allowSyntheticDefaultImports": true,             // Pozwala na używanie importów jak w ES6
+    "experimentalDecorators": true                    // Obsługa dekoratorów (jeśli są potrzebne, np. w NestJS)
+  },
+  "include": ["src"],                                 // Uwzględnienie tylko katalogu src
+  "exclude": ["node_modules", "dist"]                 // Wykluczenie katalogów node_modules i dist
+}
