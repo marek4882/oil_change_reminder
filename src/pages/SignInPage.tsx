@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // State for error messages
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -12,7 +12,7 @@ function SignInPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5184/login", {
+      const response = await fetch("http://localhost:5176/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
