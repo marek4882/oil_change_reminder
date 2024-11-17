@@ -1,7 +1,9 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function NavBar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const collapsibles = document.querySelectorAll<HTMLElement>(".collapsible");
 
@@ -11,6 +13,9 @@ function NavBar() {
       });
     });
 
+    const token = localStorage.getItem("authToken");
+    if (token) setIsLoggedIn(true);
+
     return () => {
       collapsibles.forEach((item) => {
         item.removeEventListener("click", () => {
@@ -19,6 +24,12 @@ function NavBar() {
       });
     };
   }, []);
+
+  const handleLogOut = () => {
+    localStorage.clear();
+    setIsLoggedIn(false);
+    navigate("/signin");
+  };
 
   return (
     <header className="art">
@@ -40,14 +51,22 @@ function NavBar() {
             <Link to="/docs">Docs</Link>
           </li>
           <li className="nav__item">
-            <Link to="/crudformpage">crud</Link>
+            <Link to="/crudformpage">CRUD</Link>
           </li>
 
-          <li className="nav__item">
-            <Link to="/signin" className="btn btn--accent">
-              Sign In
-            </Link>
-          </li>
+          {isLoggedIn ? (
+            <li className="nav__item">
+              <button className="btn btn--accent" onClick={handleLogOut}>
+                Logout
+              </button>
+            </li>
+          ) : (
+            <li className="nav__item">
+              <Link to="/signin" className="btn btn--accent">
+                Sign In
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

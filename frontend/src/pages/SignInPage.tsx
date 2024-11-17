@@ -12,7 +12,7 @@ function SignInPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5176/signin", {
+      const response = await fetch("http://localhost:5112/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,7 +22,7 @@ function SignInPage() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Token:", data.token);
+        console.log("Token:", data.accessToken);
         console.log("Refresh Token:", data.refreshToken);
 
         // Store the token in localStorage or sessionStorage
