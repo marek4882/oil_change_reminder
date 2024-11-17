@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useAuth();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ function SignInPage() {
         // Store the token in localStorage or sessionStorage
         localStorage.setItem("authToken", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
-
+        setIsLoggedIn(true);
         // Redirect to the vehicle page
         navigate("/vehicle");
       } else {
