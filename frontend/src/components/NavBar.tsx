@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function NavBar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+
   useEffect(() => {
     const collapsibles = document.querySelectorAll<HTMLElement>(".collapsible");
 
@@ -12,9 +13,6 @@ function NavBar() {
         item.classList.toggle("collapsible--expanded");
       });
     });
-
-    const token = localStorage.getItem("authToken");
-    if (token) setIsLoggedIn(true);
 
     return () => {
       collapsibles.forEach((item) => {
@@ -28,7 +26,6 @@ function NavBar() {
   const handleLogOut = () => {
     localStorage.clear();
     setIsLoggedIn(false);
-    navigate("/signin");
   };
 
   return (
@@ -56,9 +53,13 @@ function NavBar() {
 
           {isLoggedIn ? (
             <li className="nav__item">
-              <button className="btn btn--accent" onClick={handleLogOut}>
+              <Link
+                to="/signin"
+                className="btn btn--accent"
+                onClick={handleLogOut}
+              >
                 Logout
-              </button>
+              </Link>
             </li>
           ) : (
             <li className="nav__item">
