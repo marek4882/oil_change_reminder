@@ -40,7 +40,8 @@ function SignUpPage() {
     if (response.ok) {
       const data = await response.json();
       console.log("Name", data.name);
-      navigate("/");
+
+      navigate("/vehicle");
     } else {
       const errorData = await response.text();
       console.error("Error:", errorData);
