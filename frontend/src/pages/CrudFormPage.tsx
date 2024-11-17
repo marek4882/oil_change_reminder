@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CarManager } from "../services/CarService";
 import { LocalRepository } from "../api/ApiService";
 import { MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
-import { UserService } from "../services/UserService";
 
 const CrudFormPage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
