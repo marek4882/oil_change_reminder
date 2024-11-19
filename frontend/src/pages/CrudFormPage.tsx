@@ -21,6 +21,7 @@ const CrudFormPage: React.FC = () => {
     "Average Km per Year"
   );
   const carManager = new CarManager(new LocalRepository());
+  const carOwnerId = "test-owner-id"; // Tymczasowe ID właściciela
 
   const navigate = useNavigate();
 
@@ -95,6 +96,7 @@ const CrudFormPage: React.FC = () => {
       );
     } else {
       carManager.addCar(
+        carOwnerId,
         brand,
         model,
         typeFuel,

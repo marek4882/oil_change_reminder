@@ -1,40 +1,88 @@
 import React, { useState, useEffect } from "react";
-import { LocalRepository } from "../api/ApiService";
 import { Link, useNavigate } from "react-router-dom";
 import { Car } from "../models/Car";
-import { CarManager } from "../services/CarService";
 import { format } from "date-fns";
 
 const VehiclePage: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
-  const carManager = new CarManager(new LocalRepository());
+  const [message, setMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchedCars = carManager.readCars();
-    setCars(fetchedCars);
-    console.log(fetchedCars);
-  }, []);
-  const refreshCarList = () => {
-    const cars = carManager.readCars();
-    setCars(cars);
-    console.log("Cars list refreshed: ", cars);
+  // Fetch cars for a specific user based on JWT token
+  const fetchedCars = async () => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      setMessage("No token found. Please log in.");
+      navigate("/signin");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5112/vehicles/vehicle", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCars(data);
+      } else {
+        const errorData = await response.text();
+        setMessage(`Error: ${errorData}`);
+      }
+    } catch (error) {
+      setMessage("An error occurred while fetching vehicles.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchedCars();
+  }, []); // Fetch vehicles when the component is mounted
+
   const handleEditCar = (id: string) => {
-    carManager.setCurrentCar(id);
     navigate(`/crudformpage/${id}`);
   };
+
   const handleOpenCar = (id: string) => {
-    carManager.setCurrentCar(id);
     navigate(`/detailsvehicle/${id}`);
   };
 
-  const handleDeleteCar = (id: string) => {
-    const deleted = carManager.deleteCar(id);
-    if (deleted) {
-      refreshCarList();
-    } else {
-      alert("Unable to delete story - story with the given ID does not exist.");
+  const handleDeleteCar = async (id: string) => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      setMessage("No token found. Please log in.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5112/vehicles/vehicle/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        setCars((prevCars) => prevCars.filter((car) => car.id !== id));
+      } else {
+        const errorData = await response.text();
+        setMessage(`Error: ${errorData}`);
+      }
+    } catch (error) {
+      setMessage("An error occurred while deleting the vehicle.");
     }
   };
 
@@ -49,7 +97,10 @@ const VehiclePage: React.FC = () => {
         </Link>
       </section>
       <section className="block">
-        {cars.length > 0 ? (
+        {message && <p className="error-message">{message}</p>}
+        {loading ? (
+          <p>Loading vehicles...</p> // Loading indicator
+        ) : cars.length > 0 ? (
           cars.map((car) => (
             <article className="grid grid--1x3 sep" key={car.id}>
               <section>
@@ -71,7 +122,7 @@ const VehiclePage: React.FC = () => {
                   <span className="decoration">{car.licensePlate}</span>
                 </p>
                 <p>
-                  Milleage:{" "}
+                  Mileage:{" "}
                   <span className="decoration">
                     {car.currentMilleage} {car.milleageUnit}
                   </span>
@@ -82,7 +133,7 @@ const VehiclePage: React.FC = () => {
                     {car.nextOilChangeDate &&
                     typeof car.nextOilChangeDate === "string"
                       ? format(new Date(car.nextOilChangeDate), "yyyy-MM-dd")
-                      : "Brak danych"}
+                      : "No data available"}
                   </span>
                 </p>
               </section>

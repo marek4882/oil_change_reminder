@@ -30,6 +30,7 @@ export interface Car {
   averageKmPerYear: number;
   currentMilleage: number;
   milleageUnit: MilleageUnit;
+  carOwnerId: string;
   nextOilChangeDate?: Date;
   oilChangeHistory?: OilChangeRecord[];
 }

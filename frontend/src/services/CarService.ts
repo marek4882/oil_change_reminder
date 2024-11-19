@@ -14,6 +14,7 @@ export class CarManager {
 
   // Add
   public addCar(
+    carOwnerId: string,
     brand: string,
     model: string,
     typeFuel: TypeFuel,
@@ -35,6 +36,7 @@ export class CarManager {
 
     const car: Car = {
       id: uuid(),
+      carOwnerId,
       brand,
       model,
       typeFuel,
@@ -170,9 +172,16 @@ export class CarManager {
     return false;
   }
 
-  public readCars(): Car[] {
-    return this.repository.readCars();
+  public readCars(carOwnerId?: string): Car[] {
+    const cars = this.repository.readCars();
+
+    if (carOwnerId) {
+      return cars.filter((car) => car.carOwnerId === carOwnerId);
+    }
+
+    return cars;
   }
+
   public deleteCar(id: string): boolean {
     const cars = this.repository.readCars();
     const index = cars.findIndex((car) => car.id === id);
