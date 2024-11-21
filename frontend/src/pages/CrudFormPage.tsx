@@ -21,12 +21,13 @@ const CrudFormPage: React.FC = () => {
     "Average Km per Year"
   );
   const carManager = new CarManager(new LocalRepository());
-  const carOwnerId = "test-owner-id"; // Tymczasowe ID właściciela
 
   const navigate = useNavigate();
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
+  const token = localStorage.getItem("authToken");
+  console.log(token);
   useEffect(() => {
     if (carId && !isDataLoaded) {
       const cars = carManager.readCars();
@@ -50,7 +51,7 @@ const CrudFormPage: React.FC = () => {
         setViscosity(fetchedCar.viscosity);
         setAverageKmPerYear(fetchedCar.averageKmPerYear);
         setCurrentMilleage(fetchedCar.currentMilleage);
-        setMileageUnit(fetchedCar.milleageUnit);
+        setMileageUnit(fetchedCar.mileageUnit);
         console.log(fetchedCar);
       } else {
         console.log("Car not found for ID:", carId);
@@ -75,43 +76,50 @@ const CrudFormPage: React.FC = () => {
     setAverageMileageLabel(`Average ${newUnit} per Year`);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const lastOilChangeDate = new Date(lastOilChange);
-    if (carId) {
-      carManager.updateCar(
-        carId,
-        brand,
-        model,
-        typeFuel,
-        licensePlate,
-        lastOilChangeDate,
-        oilChangeIntervalKm,
-        oilType,
-        viscosity!,
-        averageKmPerYear,
-        currentMilleage,
-        mileageUnit
-      );
-    } else {
-      carManager.addCar(
-        carOwnerId,
-        brand,
-        model,
-        typeFuel,
-        licensePlate,
-        lastOilChangeDate,
-        oilChangeIntervalKm,
-        oilType,
-        viscosity!,
-        averageKmPerYear,
-        currentMilleage,
-        mileageUnit
-      );
-    }
+    // Log the data being sent (for debugging purposes)
+    const formData = {
+      brand,
+      carModel: model,
+      typeFuel,
+      licensePlate,
+      lastOilChange,
+      oilChangeIntervalKm,
+      oilType,
+      viscosity,
+      averageKmPerYear,
+      currentMilleage,
+      mileageUnit,
+    };
+    console.log("Submitted data:", formData);
 
-    navigate("/vehicle");
+    // Prepare the payload for sending
+    const response = await fetch(
+      carId
+        ? `http://localhost:5112/vehicles/crudformpage/${carId}`
+        : "http://localhost:5112/vehicles/crudformpage",
+      {
+        method: carId ? "PUT" : "POST", // Use PUT for updating, POST for creating
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Car data:", data);
+
+      // Redirect user after success
+      navigate("/vehicle");
+    } else {
+      const errorData = await response.json();
+      console.error("Error:", errorData);
+    }
   };
 
   const fuelTypes = ["Petrol", "Diesel", "Hybrid", "Electric"] as const;

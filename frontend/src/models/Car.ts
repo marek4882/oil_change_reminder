@@ -29,7 +29,7 @@ export interface Car {
   viscosity: Viscosity;
   averageKmPerYear: number;
   currentMilleage: number;
-  milleageUnit: MilleageUnit;
+  mileageUnit: MilleageUnit;
   carOwnerId: string;
   nextOilChangeDate?: Date;
   oilChangeHistory?: OilChangeRecord[];

@@ -25,7 +25,7 @@ export class CarManager {
     viscosity: Viscosity,
     averageKmPerYear: number,
     currentMilleage: number,
-    milleageUnit: MilleageUnit
+    mileageUnit: MilleageUnit
   ): void {
     const cars = this.repository.readCars();
     const nextOilChangeDate = calculateNextOilChangeDate(
@@ -47,7 +47,7 @@ export class CarManager {
       viscosity,
       averageKmPerYear,
       currentMilleage,
-      milleageUnit,
+      mileageUnit,
       nextOilChangeDate,
       oilChangeHistory: [
         {
@@ -140,7 +140,7 @@ export class CarManager {
         viscosity: newViscosity,
         averageKmPerYear: newAverageKmPerYear,
         currentMilleage: newCurrentMilleage,
-        milleageUnit: newMilleageUnit,
+        mileageUnit: newMilleageUnit,
         nextOilChangeDate,
       };
 

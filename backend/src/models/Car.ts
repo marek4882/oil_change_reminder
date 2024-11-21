@@ -12,13 +12,13 @@ const oilTypes = [
   "Electric-coolant",
   "Blend",
 ] as const;
-const milleageUnits = ["Km", "Mi"] as const;
+const mileageUnits = ["Km", "Mi"] as const;
 
 // Define additional types
 export type FuelType = (typeof fuelTypes)[number];
 export type Viscosity = (typeof viscosity)[number];
 export type OilType = (typeof oilTypes)[number];
-export type MilleageUnit = (typeof milleageUnits)[number];
+export type MileageUnit = (typeof mileageUnits)[number];
 
 export interface IOilChangeRecord {
   date: Date;
@@ -38,7 +38,7 @@ export interface Car extends Document {
   viscosity: Viscosity;
   averageKmPerYear: number;
   currentMilleage: number;
-  milleageUnit: MilleageUnit;
+  mileageUnit: MileageUnit;
   carOwnerId: mongoose.Types.ObjectId; // Reference to the User
   nextOilChangeDate?: Date;
   oilChangeHistory?: IOilChangeRecord[];
@@ -79,7 +79,7 @@ const CarSchema: Schema = new Schema({
   },
   averageKmPerYear: { type: Number, required: true },
   currentMilleage: { type: Number, required: true },
-  milleageUnit: { type: String, enum: milleageUnits, required: true },
+  mileageUnit: { type: String, enum: mileageUnits, required: true },
   carOwnerId: { type: mongoose.Types.ObjectId, ref: "User", required: true }, // Reference to the User model
   nextOilChangeDate: { type: Date },
   oilChangeHistory: [OilChangeRecordSchema], // Array of oil change records

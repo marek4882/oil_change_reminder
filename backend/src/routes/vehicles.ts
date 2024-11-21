@@ -5,12 +5,32 @@ import { CarModel } from "../models/Car"; // Twój model samochodu
 // Tworzymy instancję routera
 const router = Router();
 
+// Endpoint do pobrania samochodów zalogowanego użytkownika
+router.get("/vehicles", authMiddleware, async (req: Request, res: Response) => {
+  try {
+    // Pobieramy ID użytkownika z req.user (ustawione w middleware)
+    const userId = res.locals.user.id;
+
+    // Wyszukujemy samochody przypisane do zalogowanego użytkownika
+    const userCars = await CarModel.find({ carOwnerId: userId });
+
+    // Zwracamy listę samochodów
+    res.status(200).json({ success: true, vehicles: userCars });
+  } catch (error) {
+    console.error("Error fetching vehicles:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch vehicles" });
+  }
+});
+
 //Dodanie nowego samochodu
 
 router.post(
-  "crudformpage",
+  "/crudformpage",
   authMiddleware,
   async (req: Request, res: Response) => {
+    console.log("Request Body:", req.body);
     try {
       const {
         brand,
@@ -23,12 +43,12 @@ router.post(
         viscosity,
         averageKmPerYear,
         currentMilleage,
-        milleageUnit,
+        mileageUnit,
         nextOilChangeDate,
         oilChangeHistory,
       } = req.body;
 
-      const userId = req.user.id;
+      const userId = res.locals.user.id;
       if (!userId) {
         res.status(400).json({ success: false, message: "User ID not found" });
         return;
@@ -45,7 +65,7 @@ router.post(
         viscosity,
         averageKmPerYear,
         currentMilleage,
-        milleageUnit,
+        mileageUnit,
         nextOilChangeDate,
         oilChangeHistory,
         carOwnerId: userId,
@@ -60,6 +80,7 @@ router.post(
     }
   }
 );
+
 // Update a car by ID
 
 router.put(
@@ -68,7 +89,7 @@ router.put(
   async (req: Request, res: Response) => {
     try {
       const carId = req.params.id;
-      const userId = req.user.id;
+      const userId = res.locals.user.id;
 
       const {
         brand,
@@ -99,7 +120,7 @@ router.put(
           viscosity,
           averageKmPerYear,
           currentMilleage,
-          milleageUnit,
+          mileageUnit: milleageUnit,
           nextOilChangeDate,
           oilChangeHistory,
         },
@@ -107,30 +128,16 @@ router.put(
       );
 
       if (!updatedCar) {
-        res.status(500);
+        res.status(500).json({ success: false, message: "Car not found" });
         return;
       }
+
+      res.status(200).json({ success: true, car: updatedCar });
     } catch (error) {
       console.error("Error fetching vehicles:", error);
+      res.status(500).json({ success: false, car: "Failed to update car" });
     }
   }
 );
-
-// Endpoint do pobrania samochodów zalogowanego użytkownika
-router.get("/vehicles", authMiddleware, async (req: Request, res: Response) => {
-  try {
-    const userId = req.user.id;
-
-    const userCars = await CarModel.find({ carOwnerId: userId });
-
-    // Zwracamy listę samochodów
-    res.status(200).json({ success: true, vehicles: userCars });
-  } catch (error) {
-    console.error("Error fetching vehicles:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch vehicles" });
-  }
-});
 
 export default router;

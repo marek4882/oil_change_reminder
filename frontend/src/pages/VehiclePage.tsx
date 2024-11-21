@@ -12,6 +12,7 @@ const VehiclePage: React.FC = () => {
   // Fetch cars for a specific user based on JWT token
   const fetchedCars = async () => {
     const token = localStorage.getItem("authToken");
+    console.log(token);
 
     if (!token) {
       setMessage("No token found. Please log in.");
@@ -124,7 +125,7 @@ const VehiclePage: React.FC = () => {
                 <p>
                   Mileage:{" "}
                   <span className="decoration">
-                    {car.currentMilleage} {car.milleageUnit}
+                    {car.currentMilleage} {car.mileageUnit}
                   </span>
                 </p>
                 <p>

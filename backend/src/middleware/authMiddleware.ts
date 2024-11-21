@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { verify, JwtPayload } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authorizationHeader = req.header("Authorization");
@@ -20,11 +20,12 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    if (process.env.SECRET_KEY !== "string") {
+    if (typeof process.env.SECRET_KEY !== "string") {
       throw new Error("SECRET_KEY is not set in environment variables");
     }
     const decoded = verify(token, process.env.SECRET_KEY);
-    if (typeof decoded !== "string") req.user = decoded;
+    if (typeof decoded !== "string") res.locals.user = decoded;
+    console.log(typeof decoded);
     next();
   } catch (err) {
     console.error(err);

@@ -28,8 +28,9 @@ function SignInPage() {
         console.log("Refresh Token:", data.refreshToken);
 
         // Store the token in localStorage or sessionStorage
-        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("authToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
+
         setIsLoggedIn(true);
         // Redirect to the vehicle page
         navigate("/vehicle");
