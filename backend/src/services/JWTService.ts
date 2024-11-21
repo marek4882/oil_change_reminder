@@ -1,7 +1,4 @@
 import jwt from "jsonwebtoken";
-export interface UserPayload extends jwt.JwtPayload {
-  id: string;
-}
 
 export const generateToken = (user: { id: string }): string | null => {
   const secretKey = process.env.SECRET_KEY;
@@ -25,14 +22,14 @@ export const generateRefreshToken = (user: { id: string }): string | null => {
   });
 };
 
-export const verifyToken = (token: string): UserPayload | null => {
+export const verifyToken = (token: string) => {
   const secretKey = process.env.SECRET_KEY;
   if (typeof secretKey !== "string") {
     console.error("Secret key is not set");
     return null;
   }
   try {
-    return jwt.verify(token, secretKey) as UserPayload;
+    return jwt.verify(token, secretKey);
   } catch (error) {
     console.error("Failed to verify token", error);
     return null;

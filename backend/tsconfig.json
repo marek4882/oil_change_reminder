@@ -13,6 +13,6 @@
     "allowSyntheticDefaultImports": true,             // Pozwala na używanie importów jak w ES6
     "experimentalDecorators": true   ,                // Obsługa dekoratorów (jeśli są potrzebne, np. w NestJS)
   },
-  "include": ["types/custom.d.ts","src"],                                 // Uwzględnienie tylko katalogu src
+  "include": [ "src", "types"],                                 // Uwzględnienie tylko katalogu src
   "exclude": ["node_modules", "dist"]                 // Wykluczenie katalogów node_modules i dist
 }
