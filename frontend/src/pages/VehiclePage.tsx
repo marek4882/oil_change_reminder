@@ -64,11 +64,10 @@ const VehiclePage: React.FC = () => {
                   </span>
                 </p>
                 <p>
-                  Next oil change:
+                  Next oil change:{" "}
                   <span className="decoration">
-                    {car.nextOilChangeDate &&
-                    typeof car.nextOilChangeDate === "string"
-                      ? format(new Date(car.nextOilChangeDate), "yyyy-MM-dd")
+                    {car.lastOilChange
+                      ? format(car.lastOilChange, "dd-MM-yyyy")
                       : "No data available"}
                   </span>
                 </p>
