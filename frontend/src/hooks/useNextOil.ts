@@ -1,17 +1,23 @@
 import { useCallback, useState } from "react";
 
-// Helper function for the API call
 const addOilChange = async (
   id: string,
   date: string,
   oilType: string,
-  mileage: number
+  mileage: number,
+  viscosity: string // Added viscosity
 ) => {
   const token = localStorage.getItem("authToken");
 
+  console.log({
+    date,
+    oilType,
+    mileage,
+    viscosity,
+  });
   // Perform early validation before calling the API
-  if (!date || !oilType || !mileage) {
-    throw new Error("Date, oilType, and mileage are required.");
+  if (!date || !oilType || !mileage || !viscosity) {
+    throw new Error("Date, oilType, viscosity, and mileage are required.");
   }
 
   const response = await fetch(`http://localhost:5112/vehicles/${id}`, {
@@ -24,6 +30,7 @@ const addOilChange = async (
       date,
       oilType,
       mileage,
+      viscosity, // Send viscosity to the API
     }),
   });
 
@@ -40,7 +47,13 @@ const addOilChange = async (
 
 // Custom hook to handle adding oil change
 export const useAddOilChange = (): [
-  (id: string, date: string, oilType: string, mileage: number) => Promise<void>,
+  (
+    id: string,
+    date: string,
+    oilType: string,
+    mileage: number,
+    viscosity: string
+  ) => Promise<void>,
   boolean,
   string | undefined
 ] => {
@@ -48,12 +61,19 @@ export const useAddOilChange = (): [
   const [error, setError] = useState<string | undefined>();
 
   const handle = useCallback(
-    async (id: string, date: string, oilType: string, mileage: number) => {
+    async (
+      id: string,
+      date: string,
+      oilType: string,
+      mileage: number,
+      viscosity: string
+    ) => {
       setLoading(true);
       setError(undefined); // Reset error state on each attempt
 
       try {
-        await addOilChange(id, date, oilType, mileage);
+        // Pass viscosity to the addOilChange function
+        await addOilChange(id, date, oilType, mileage, viscosity);
       } catch (e) {
         console.error(e);
         if (e instanceof Error) {
