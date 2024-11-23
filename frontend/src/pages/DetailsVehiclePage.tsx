@@ -7,7 +7,7 @@ import carImage from "../assets/hero_images.svg";
 import { format } from "date-fns";
 import { Calendar, Drop, Gauge, PlusCircle } from "phosphor-react";
 import { useCar } from "../hooks/useCar";
-import { id } from "date-fns/locale";
+import { id, vi } from "date-fns/locale";
 import { useDeleteCar } from "../hooks/useDeleteCar";
 import { useAddOilChange } from "../hooks/useNextOil";
 
@@ -30,9 +30,10 @@ const DetailsVehiclePage: React.FC = () => {
     id: string,
     date: string,
     oilType: string,
+    viscosity: string,
     mileage: number
   ) => {
-    await addOilChange(id, date, oilType, mileage);
+    await addOilChange(id, date, oilType, mileage, viscosity);
   };
 
   const handleDeleteCar = async (id: string) => {
@@ -46,6 +47,13 @@ const DetailsVehiclePage: React.FC = () => {
     }
   };
   const handleOpenForm = () => {
+    if (car?.oilChangeHistory && car.oilChangeHistory.length > 0) {
+      const lastRecord = car.oilChangeHistory[car.oilChangeHistory.length - 1];
+      setOilChangeDate(format(new Date(lastRecord.date), "yyyy-MM-dd")); // Ustaw datę w formacie yyyy-MM-dd
+      setOilType(lastRecord.oilType as OilType); // Ustaw typ oleju
+      setViscosity(lastRecord.viscosity as Viscosity); // Ustaw lepkość
+      setMileage(lastRecord.mileage); // Ustaw przebieg
+    }
     setShowOilChangeForm(true);
   };
 
@@ -110,8 +118,8 @@ const DetailsVehiclePage: React.FC = () => {
               <p>
                 Last oil change:{" "}
                 <span className="decoration">
-                  {car.lastOilChange && typeof car.lastOilChange === "string"
-                    ? format(new Date(car.lastOilChange), "yyyy-MM-dd")
+                  {car.lastOilChange
+                    ? format(car.lastOilChange, "dd-MM-yyyy")
                     : "No data available"}
                 </span>
               </p>
@@ -128,10 +136,10 @@ const DetailsVehiclePage: React.FC = () => {
                 </span>
               </p>
               <p>
-                Next oil change:
+                Next oil change:{" "}
                 <span className="decoration">
                   {car.nextOilChangeDate
-                    ? format(new Date(car.nextOilChangeDate), "yyyy-MM-dd")
+                    ? format(car.nextOilChangeDate, "dd-MM-yyyy")
                     : "Brak danych"}
                 </span>
               </p>
@@ -162,12 +170,14 @@ const DetailsVehiclePage: React.FC = () => {
                       <p className="event-description">
                         <Calendar size={20} color="black" /> Oil Change Date:{" "}
                         <span className="decoration">
-                          {format(new Date(record.date), "dd.MM.yyyy")}
+                          {format(new Date(record.date), "dd-MM-yyyy")}
                         </span>
                       </p>
                       <p className="event-description">
                         <Drop size={20} color="black" /> Oil Type:{" "}
-                        <span className="decoration">{record.oilType} </span>
+                        <span className="decoration">
+                          {record.oilType} {record.viscosity}{" "}
+                        </span>
                       </p>
                       <p className="event-description">
                         <Gauge size={20} color="black" /> Milleage:{" "}
@@ -211,7 +221,27 @@ const DetailsVehiclePage: React.FC = () => {
                       ))}
                   </select>
                 </div>
-
+                {/* Viscosity Dropdown */}
+                <div>
+                  <label>Viscosity:</label>
+                  <select
+                    className="form-control"
+                    value={viscosity || ""}
+                    onChange={(e) => setViscosity(e.target.value as Viscosity)}
+                    disabled={!oilType || !oilToViscosityMap[oilType].length} // Disable if no options
+                    required
+                  >
+                    <option value="" disabled>
+                      Select viscosity
+                    </option>
+                    {oilType &&
+                      oilToViscosityMap[oilType].map((visc) => (
+                        <option key={visc} value={visc}>
+                          {visc}
+                        </option>
+                      ))}
+                  </select>
+                </div>
                 {/* Current Mileage Field */}
                 <div>
                   <label>Current Mileage:</label>
@@ -230,6 +260,7 @@ const DetailsVehiclePage: React.FC = () => {
                       car._id,
                       car.lastOilChange.toISOString(),
                       car.oilType,
+                      car.viscosity,
                       car.currentMilleage
                     )
                   }
