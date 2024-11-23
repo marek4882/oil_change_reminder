@@ -24,6 +24,7 @@ export type MileageUnit = (typeof mileageUnits)[number];
 export interface IOilChangeRecord {
   date: Date;
   oilType: OilType;
+  viscosity: Viscosity;
   mileage: number;
 }
 
@@ -56,6 +57,7 @@ const OilChangeRecordSchema: Schema = new Schema({
     enum: oilTypes,
     required: true,
   },
+  viscosity: { type: String, enum: viscosity, required: true },
   mileage: { type: Number, required: true },
 });
 // Create the Car schema
