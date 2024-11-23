@@ -14,6 +14,7 @@ export type MilleageUnit = "Km" | "Mi";
 export interface OilChangeRecord {
   date: Date;
   oilType: OilType;
+  viscosity: Viscosity;
   mileage: number;
 }
 
