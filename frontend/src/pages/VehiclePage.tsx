@@ -1,52 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Car } from "../models/Car";
 import { format } from "date-fns";
+import { useCars } from "../hooks/useCars";
+import { useDeleteCar } from "../hooks/useDeleteCar";
 
 const VehiclePage: React.FC = () => {
-  const [cars, setCars] = useState<Car[]>([]);
-  const [message, setMessage] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
+  const [cars, setCars, loading, message] = useCars();
+  const [deleteCar, deleteLoading, deleteError] = useDeleteCar();
   const navigate = useNavigate();
-
-  // Fetch cars for a specific user based on JWT token
-  const fetchedCars = async () => {
-    const token = localStorage.getItem("authToken");
-    console.log(token);
-
-    if (!token) {
-      setMessage("No token found. Please log in.");
-      navigate("/signin");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:5112/vehicles/vehicle", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCars(data);
-      } else {
-        const errorData = await response.text();
-        setMessage(`Error: ${errorData}`);
-      }
-    } catch (error) {
-      setMessage("An error occurred while fetching vehicles.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchedCars();
-  }, []); // Fetch vehicles when the component is mounted
 
   const handleEditCar = (id: string) => {
     navigate(`/crudformpage/${id}`);
@@ -57,34 +18,8 @@ const VehiclePage: React.FC = () => {
   };
 
   const handleDeleteCar = async (id: string) => {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-      setMessage("No token found. Please log in.");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:5112/vehicles/vehicle/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        setCars((prevCars) => prevCars.filter((car) => car.id !== id));
-      } else {
-        const errorData = await response.text();
-        setMessage(`Error: ${errorData}`);
-      }
-    } catch (error) {
-      setMessage("An error occurred while deleting the vehicle.");
-    }
+    setCars(cars.filter((car) => car._id != id));
+    await deleteCar(id);
   };
 
   return (
@@ -102,8 +37,8 @@ const VehiclePage: React.FC = () => {
         {loading ? (
           <p>Loading vehicles...</p> // Loading indicator
         ) : cars.length > 0 ? (
-          cars.map((car) => (
-            <article className="grid grid--1x3 sep" key={car.id}>
+          cars.map((car, i) => (
+            <article className="grid grid--1x3 sep" key={i}>
               <section>
                 <img
                   className="vehicle__image"
@@ -141,17 +76,17 @@ const VehiclePage: React.FC = () => {
               <section>
                 <button
                   className="btn btn--edit"
-                  onClick={() => handleEditCar(car.id)}
+                  onClick={() => handleEditCar(car._id)}
                 >
                   Edit
                 </button>
                 <button
                   className="btn btn--delete"
-                  onClick={() => handleDeleteCar(car.id)}
+                  onClick={() => handleDeleteCar(car._id)}
                 >
                   Delete
                 </button>
-                <button className="btn" onClick={() => handleOpenCar(car.id)}>
+                <button className="btn" onClick={() => handleOpenCar(car._id)}>
                   Details
                 </button>
               </section>

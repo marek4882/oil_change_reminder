@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { CarManager } from "../services/CarService";
-import { LocalRepository } from "../api/ApiService";
 import { MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
 
 const CrudFormPage: React.FC = () => {
@@ -20,45 +18,60 @@ const CrudFormPage: React.FC = () => {
   const [averageMileageLabel, setAverageMileageLabel] = useState(
     "Average Km per Year"
   );
-  const carManager = new CarManager(new LocalRepository());
 
   const navigate = useNavigate();
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const token = localStorage.getItem("authToken");
-  console.log(token);
+
   useEffect(() => {
-    if (carId && !isDataLoaded) {
-      const cars = carManager.readCars();
-      const fetchedCar = cars.find((car) => car.id === carId);
+    const fetchCar = async () => {
+      if (carId) {
+        try {
+          const response = await fetch(
+            `http://localhost:5112/vehicles/${carId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-      if (fetchedCar) {
-        setBrand(fetchedCar.brand);
-        setModel(fetchedCar.model);
-        setTypeFuel(fetchedCar.typeFuel);
-        setLicensePlate(fetchedCar.licensePlate);
+          if (response.ok) {
+            const fetchedCar = await response.json();
+            console.log("Fetched Car Data:", fetchedCar);
 
-        const lastOilChangeDate = new Date(fetchedCar.lastOilChange);
-        setLastOilChange(
-          isNaN(lastOilChangeDate.getTime())
-            ? ""
-            : lastOilChangeDate.toISOString().split("T")[0]
-        );
+            setBrand(fetchedCar.brand);
+            setModel(fetchedCar.carModel);
+            setTypeFuel(fetchedCar.typeFuel);
+            setLicensePlate(fetchedCar.licensePlate);
 
-        setOilChangeIntervalKm(fetchedCar.oilChangeIntervalKm);
-        setOilType(fetchedCar.oilType);
-        setViscosity(fetchedCar.viscosity);
-        setAverageKmPerYear(fetchedCar.averageKmPerYear);
-        setCurrentMilleage(fetchedCar.currentMilleage);
-        setMileageUnit(fetchedCar.mileageUnit);
-        console.log(fetchedCar);
-      } else {
-        console.log("Car not found for ID:", carId);
+            const lastOilChangeDate = new Date(fetchedCar.lastOilChange);
+            setLastOilChange(
+              isNaN(lastOilChangeDate.getTime())
+                ? ""
+                : lastOilChangeDate.toISOString().split("T")[0]
+            );
+
+            setOilType(fetchedCar.oilType);
+            setViscosity(fetchedCar.viscosity);
+            setAverageKmPerYear(fetchedCar.averageKmPerYear);
+            setCurrentMilleage(fetchedCar.currentMilleage);
+            setMileageUnit(fetchedCar.mileageUnit);
+          } else {
+            console.error("Failed to fetch car data for ID:", carId);
+          }
+        } catch (error) {
+          console.error("Error fetching car data:", error);
+        }
       }
-      setIsDataLoaded(true);
-    }
-  }, [carId, carManager, isDataLoaded]);
+    };
+
+    fetchCar();
+  }, [carId, token]);
 
   const handleFuelTypeChange = (newFuelType: TypeFuel) => {
     setTypeFuel(newFuelType);
@@ -98,8 +111,8 @@ const CrudFormPage: React.FC = () => {
     // Prepare the payload for sending
     const response = await fetch(
       carId
-        ? `http://localhost:5112/vehicles/crudformpage/${carId}`
-        : "http://localhost:5112/vehicles/crudformpage",
+        ? `http://localhost:5112/vehicles/${carId}`
+        : "http://localhost:5112/vehicles/",
       {
         method: carId ? "PUT" : "POST", // Use PUT for updating, POST for creating
         headers: {
@@ -215,7 +228,6 @@ const CrudFormPage: React.FC = () => {
             value={oilChangeIntervalKm}
             onChange={(e) => setOilChangeIntervalKm(Number(e.target.value))}
             disabled
-            required
           />
         </div>
         {/* Oil Type Dropdown */}
@@ -226,15 +238,15 @@ const CrudFormPage: React.FC = () => {
             value={oilType}
             onChange={(e) => handleOilTypeChange(e.target.value as OilType)}
           >
-            {oilTypes[typeFuel].map((oil) => (
+            {oilTypes[typeFuel]?.map((oil) => (
               <option key={oil} value={oil}>
                 {oil}
               </option>
-            ))}
+            )) || <option disabled>No oils available</option>}
           </select>
         </div>
         {/* Viscosity Dropdown */}
-        {oilToViscosityMap[oilType].length > 0 && (
+        {oilToViscosityMap[oilType]?.length > 0 && (
           <div>
             <label>Oil Viscosity:</label>
             <select
@@ -242,14 +254,15 @@ const CrudFormPage: React.FC = () => {
               value={viscosity || ""}
               onChange={(e) => setViscosity(e.target.value as Viscosity)}
             >
-              {oilToViscosityMap[oilType].map((v) => (
+              {oilToViscosityMap[oilType]?.map((v) => (
                 <option key={v} value={v}>
                   {v}
                 </option>
-              ))}
+              )) || <option disabled>No viscosities available</option>}
             </select>
           </div>
         )}
+
         {/* Current Mileage Field */}
         <div>
           <label>Current Mileage:</label>

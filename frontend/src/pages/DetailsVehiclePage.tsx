@@ -6,15 +6,18 @@ import { LocalRepository } from "../api/ApiService";
 import carImage from "../assets/hero_images.svg";
 import { format } from "date-fns";
 import { Calendar, Drop, Gauge, PlusCircle } from "phosphor-react";
+import { useCar } from "../hooks/useCar";
+import { id } from "date-fns/locale";
+import { useDeleteCar } from "../hooks/useDeleteCar";
+import { useAddOilChange } from "../hooks/useNextOil";
 
 const DetailsVehiclePage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
-
-  const carManager = new CarManager(new LocalRepository());
-
-  const [car, setCar] = useState<Car | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [car, loading, error] = useCar(carId || "");
+  const [deleteCar, deleteLoading, deleteError] = useDeleteCar();
+  const [addOilChange, addOilChangeLoading, addOilChangeError] =
+    useAddOilChange();
 
   const [showOilChangeForm, setShowOilChangeForm] = useState(false);
 
@@ -23,24 +26,18 @@ const DetailsVehiclePage: React.FC = () => {
   const [mileage, setMileage] = useState<number>(0);
   const [viscosity, setViscosity] = useState<Viscosity | null>(null);
 
-  useEffect(() => {
-    if (carId) {
-      carManager.setCurrentCar(carId);
-      refreshCarDetails();
-    }
-  }, [carId]);
+  const handleAddOilChange = async (
+    id: string,
+    date: string,
+    oilType: string,
+    mileage: number
+  ) => {
+    await addOilChange(id, date, oilType, mileage);
+  };
 
-  const refreshCarDetails = () => {
-    const cars = carManager.readCars();
-    const foundCar = cars.find((car) => car.id === carId);
-
-    if (foundCar) {
-      foundCar.lastOilChange = new Date(foundCar.lastOilChange);
-    }
-
-    setCar(foundCar || null);
-    setLoading(false);
-    console.log("id of the car", foundCar, "car", cars);
+  const handleDeleteCar = async (id: string) => {
+    await deleteCar(id);
+    navigate("/vehicle");
   };
 
   const handleEdit = () => {
@@ -48,26 +45,18 @@ const DetailsVehiclePage: React.FC = () => {
       navigate(`/crudformpage/${car.id}`);
     }
   };
-
-  const handleDelete = () => {
-    if (car) {
-      carManager.deleteCar(car.id);
-      navigate("/vehicle"); // Redirect to home or cars list after deletion
-    }
-  };
-
-  const handleAddOilChange = () => {
+  const handleOpenForm = () => {
     setShowOilChangeForm(true);
   };
 
-  const handleSaveOilChange = () => {
-    if (car && oilChangeDate && mileage) {
-      const parsedDate = new Date(oilChangeDate);
-      carManager.addOilChange(car.id, parsedDate, oilType, mileage);
-      refreshCarDetails();
-      setShowOilChangeForm(false);
-    }
-  };
+  // const handleSaveOilChange = () => {
+  //   if (car && oilChangeDate && mileage) {
+  //     const parsedDate = new Date(oilChangeDate);
+  //     carManager.addOilChange(car.id, parsedDate, oilType, mileage);
+  //     refreshCarDetails();
+  //     setShowOilChangeForm(false);
+  //   }
+  // };
   const fuelTypes = ["Petrol", "Diesel", "Hybrid", "Electric"] as const;
   const oilTypes: Record<TypeFuel, OilType[]> = {
     Petrol: ["Synthetic", "Semi-synthetic", "Mineral"],
@@ -109,7 +98,7 @@ const DetailsVehiclePage: React.FC = () => {
                 Brand: <span className="decoration">{car.brand}</span>
               </p>
               <p>
-                Model: <span className="decoration">{car.model}</span>
+                Model: <span className="decoration">{car.carModel}</span>
               </p>
               <p>
                 Type fuel: <span className="decoration">{car.typeFuel}</span>
@@ -121,7 +110,9 @@ const DetailsVehiclePage: React.FC = () => {
               <p>
                 Last oil change:{" "}
                 <span className="decoration">
-                  {car.lastOilChange.toLocaleDateString()}
+                  {car.lastOilChange && typeof car.lastOilChange === "string"
+                    ? format(new Date(car.lastOilChange), "yyyy-MM-dd")
+                    : "No data available"}
                 </span>
               </p>
               <p>
@@ -133,7 +124,7 @@ const DetailsVehiclePage: React.FC = () => {
               <p>
                 Milleage:{" "}
                 <span className="decoration">
-                  {car.currentMilleage} {car.milleageUnit}
+                  {car.currentMilleage} {car.mileageUnit}
                 </span>
               </p>
               <p>
@@ -147,7 +138,10 @@ const DetailsVehiclePage: React.FC = () => {
               <button className="btn btn--edit" onClick={handleEdit}>
                 Edit
               </button>
-              <button className="btn btn--delete" onClick={handleDelete}>
+              <button
+                className="btn btn--delete"
+                onClick={() => handleDeleteCar(car._id)}
+              >
                 Delete
               </button>
             </div>
@@ -155,7 +149,7 @@ const DetailsVehiclePage: React.FC = () => {
           <section className="block">
             <div className="timeline-container">
               <h3 className="block__header">History</h3>
-              <button className="btn" onClick={handleAddOilChange}>
+              <button className="btn" onClick={handleOpenForm}>
                 Add Oil Change
               </button>
               {car.oilChangeHistory && car.oilChangeHistory.length > 0 ? (
@@ -229,7 +223,17 @@ const DetailsVehiclePage: React.FC = () => {
                     required
                   />
                 </div>
-                <button className="btn btn--save" onClick={handleSaveOilChange}>
+                <button
+                  className="btn btn--save"
+                  onClick={() =>
+                    handleAddOilChange(
+                      car._id,
+                      car.lastOilChange.toISOString(),
+                      car.oilType,
+                      car.currentMilleage
+                    )
+                  }
+                >
                   Save
                 </button>
                 <button
