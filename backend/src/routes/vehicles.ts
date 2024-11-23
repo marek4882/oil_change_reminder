@@ -66,6 +66,7 @@ router.post("/", async (req: Request, res: Response) => {
         {
           date: lastOilChange,
           oilType: oilType,
+          viscosity: viscosity,
           mileage: currentMilleage,
         },
       ],
@@ -200,19 +201,21 @@ router.get("/:carId", async (req: Request, res: Response) => {
 // Post a next oil change
 // vehicle
 
+
+
 router.put("/:carId", async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
-    const { date, oilType, mileage } = req.body;
+    const { date, oilType, viscosity, mileage } = req.body;
 
-    // Validate the fields
-    if (!date || !oilType || !mileage) {
-      res.status(400).json({
+    // Validate the required fields
+    if (!date || !oilType || !viscosity || !mileage) {
+     res.status(400).json({
         success: false,
         message:
-          "Date, oilType, and mileage are required to add an oil change.",
+          "Date, oilType, viscosity, and mileage are required to add an oil change.",
       });
-      return;
+      return
     }
 
     // Validate the date
@@ -235,24 +238,26 @@ router.put("/:carId", async (req: Request, res: Response) => {
     const newOilChangeRecord = {
       date: validDate, // Ensure the date is a valid Date object
       oilType,
+      viscosity, // Add viscosity
       mileage,
     };
 
     // Calculate the next oil change date based on car data
     const nextOilChangeDate = car.calculateNextOilChangeDate();
 
-    // Prepare the update fields, including the push for the oil change history
-    const updateFields = {
-      lastOilChange: validDate,
-      currentMilleage: mileage,
-      nextOilChangeDate, // Calculate the next oil change date
-      $push: { oilChangeHistory: newOilChangeRecord },
-    };
+    // Prepare the update fields dynamically (use $set for individual fields and $push for the history array)
+    const updateFields: any = {};
 
-    // Ensure that we only update the fields that are available in the request body
+    // Only set the fields that are present in the request body
+    updateFields.lastOilChange = validDate;
+    updateFields.currentMilleage = mileage;
+    updateFields.nextOilChangeDate = nextOilChangeDate;
+    updateFields.$push = { oilChangeHistory: newOilChangeRecord };
+
+    // Update the car document
     const updatedCar = await CarModel.findByIdAndUpdate(
       carId,
-      { $set: updateFields },
+      { $set: updateFields, $push: { oilChangeHistory: newOilChangeRecord } },
       { new: true, runValidators: true } // Ensure validation is run on the updated data
     );
 
@@ -282,7 +287,6 @@ router.put("/:carId", async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ success: false, message: "Failed to add oil change" });
-    return;
   }
 });
 
