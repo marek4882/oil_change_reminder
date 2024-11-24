@@ -40,6 +40,7 @@ function SignUpPage() {
     if (response.ok) {
       const data = await response.json();
       console.log("Name", data.name);
+      // wyslij e-mail powitalny
 
       navigate("/vehicle");
     } else {

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
 import { useCar } from "../hooks/useCar";
 import { OIL_CHANGE_INTERVAL_KM } from "../models/Constant";
+import { format } from "date-fns";
 
 const CrudFormPage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
@@ -49,26 +50,23 @@ const CrudFormPage: React.FC = () => {
           );
 
           if (response.ok) {
-            const fetchedCar = await response.json();
-            console.log("Fetched Car Data:", fetchedCar);
+            const { car } = await response.json();
+            console.log("Fetched Car Data:", car);
 
-            setBrand(fetchedCar.brand);
-            setModel(fetchedCar.carModel);
-            setTypeFuel(fetchedCar.typeFuel);
-            setLicensePlate(fetchedCar.licensePlate);
+            setBrand(car.brand);
+            setModel(car.carModel);
+            setTypeFuel(car.typeFuel);
+            setLicensePlate(car.licensePlate);
 
-            const lastOilChangeDate = new Date(fetchedCar.lastOilChange);
-            setLastOilChange(
-              isNaN(lastOilChangeDate.getTime())
-                ? ""
-                : lastOilChangeDate.toISOString().split("T")[0]
-            );
+            const lastOilChangeDate = new Date(car.lastOilChange);
+            console.log(car.lastOilChange, lastOilChangeDate);
+            setLastOilChange(lastOilChangeDate);
 
-            setOilType(fetchedCar.oilType);
-            setViscosity(fetchedCar.viscosity);
-            setAverageKmPerYear(fetchedCar.averageKmPerYear);
-            setCurrentMilleage(fetchedCar.currentMilleage);
-            setMileageUnit(fetchedCar.mileageUnit);
+            setOilType(car.oilType);
+            setViscosity(car.viscosity);
+            setAverageKmPerYear(car.averageKmPerYear);
+            setCurrentMilleage(car.currentMilleage);
+            setMileageUnit(car.mileageUnit);
           } else {
             console.error("Failed to fetch car data for ID:", carId);
           }
@@ -107,7 +105,6 @@ const CrudFormPage: React.FC = () => {
       typeFuel,
       licensePlate,
       lastOilChange,
-      oilChangeIntervalKm,
       oilType,
       viscosity,
       averageKmPerYear,
@@ -162,6 +159,7 @@ const CrudFormPage: React.FC = () => {
   };
 
   return (
+    <>
     <section className="block grid grid--1x2">
       <picture className="hero__image-container">
         <img className="hero__image" src="src/assets/hero_images.svg" alt="" />
@@ -222,8 +220,10 @@ const CrudFormPage: React.FC = () => {
           <input
             className="form-control"
             type="date"
-            value={lastOilChange}
-            onChange={(e) => setLastOilChange(e.target.value)}
+            value={
+              lastOilChange ? format(lastOilChange, "yyyy-MM-dd") : undefined
+            }
+            onChange={(e) => setLastOilChange(new Date(e.target.value))}
             required
           />
         </div>
@@ -312,6 +312,7 @@ const CrudFormPage: React.FC = () => {
         </button>
       </form>
     </section>
+    </>
   );
 };
 

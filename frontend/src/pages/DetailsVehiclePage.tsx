@@ -7,6 +7,32 @@ import { Calendar, Drop, Gauge, PlusCircle } from "phosphor-react";
 import { useCar } from "../hooks/useCar";
 import { useDeleteCar } from "../hooks/useDeleteCar";
 import { useAddOilChange } from "../hooks/useNextOil";
+import { OIL_CHANGE_INTERVAL_KM } from "../models/Constant";
+
+const calculateNextOilChangeDate = (
+  averageKmPerYear: number,
+  lastOilChange: Date
+): Date => {
+  // Oblicz liczbę miesięcy do kolejnej wymiany
+  const monthsUntilNextChange =
+    (OIL_CHANGE_INTERVAL_KM / averageKmPerYear) * 12;
+
+  // Stwórz kopię daty ostatniej wymiany, aby dodać liczbę miesięcy
+  const nextOilChangeDate = new Date(lastOilChange);
+  nextOilChangeDate.setMonth(
+    nextOilChangeDate.getMonth() + monthsUntilNextChange
+  );
+
+  // Sprawdź, czy data następnej wymiany przekracza 1 rok
+  const oneYearLater = new Date(lastOilChange);
+  oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+  // Jeśli następna data wymiany jest większa niż rok od ostatniej, ustaw na rok później
+  if (nextOilChangeDate > oneYearLater) {
+    return oneYearLater;
+  }
+  return nextOilChangeDate;
+};
 
 const DetailsVehiclePage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
@@ -32,23 +58,29 @@ const DetailsVehiclePage: React.FC = () => {
   }, [car]);
 
   const handleAddOilChange = async (
-    id: string,
+    id: string | undefined,
     date: string,
     oilType: string,
     viscosity: string,
     mileage: number
   ) => {
-    if (car == null) return;
+    if (car == null || typeof id !== "string") return;
 
     setShowOilChangeForm(false);
     await addOilChange(id, date, oilType, mileage, viscosity);
+    const lastOilChange = new Date(date);
 
     const newCar = {
       ...car,
+      nextOilChangeDate: calculateNextOilChangeDate(
+        car.averageKmPerYear,
+        lastOilChange
+      ),
+      lastOilChange,
       oilChangeHistory: [
         ...(car?.oilChangeHistory || []),
         {
-          date: new Date(date),
+          date: lastOilChange,
           mileage: mileage,
           oilType: oilType as OilType,
           viscosity: viscosity as Viscosity,
@@ -58,12 +90,12 @@ const DetailsVehiclePage: React.FC = () => {
     setCar(newCar);
   };
 
-  const handleDeleteCar = async (id: string) => {
-    await deleteCar(id);
+  const handleDeleteCar = async (id?: string) => {
+    if (typeof id === "string") await deleteCar(id);
     navigate("/vehicle");
   };
 
-  const handleEditCar = (id: string) => {
+  const handleEditCar = (id?: string) => {
     navigate(`/crudformpage/${id}`);
   };
 

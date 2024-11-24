@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 
 function SignInPage() {
   const [email, setEmail] = useState("");
@@ -8,6 +9,11 @@ function SignInPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { setIsLoggedIn } = useAuth();
+
+  const responseMessage = (response: CredentialResponse) => {
+    console.log(response);
+  };
+  const errorMessage = () => {};
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,6 +89,7 @@ function SignInPage() {
         <p className="signup-message">
           Need to create an account? <Link to="/signup">Sign up</Link>
         </p>
+        <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
       </form>
     </section>
   );

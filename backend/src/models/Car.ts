@@ -68,7 +68,7 @@ const CarSchema: Schema = new Schema({
   },
   licensePlate: { type: String, required: true, unique: true },
   lastOilChange: { type: Date, required: true },
-  oilChangeIntervalKm: { type: Number, required: true },
+  oilChangeIntervalKm: { type: Number, required: false },
   oilType: {
     type: String,
     enum: oilTypes,

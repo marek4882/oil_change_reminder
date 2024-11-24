@@ -1,6 +1,5 @@
 import { Repository } from "../api/ApiService";
 import { Car, MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
-import { v4 as uuid } from "uuid";
 import { calculateNextOilChangeDate } from "./CalculateOilChange";
 
 export class CarManager {
@@ -16,7 +15,7 @@ export class CarManager {
   public addCar(
     carOwnerId: string,
     brand: string,
-    model: string,
+    carModel: string,
     typeFuel: TypeFuel,
     licensePlate: string,
     lastOilChangeDate: Date,
@@ -35,10 +34,9 @@ export class CarManager {
     );
 
     const car: Car = {
-      id: uuid(),
       carOwnerId,
       brand,
-      model,
+      carModel,
       typeFuel,
       licensePlate,
       lastOilChange: lastOilChangeDate,
@@ -54,6 +52,7 @@ export class CarManager {
           date: lastOilChangeDate,
           oilType,
           mileage: currentMilleage,
+          viscosity,
         },
       ],
     };
@@ -65,10 +64,11 @@ export class CarManager {
     carId: string,
     date: Date,
     oilType: OilType,
-    mileage: number
+    mileage: number,
+    viscosity: Viscosity
   ): boolean {
     const cars = this.repository.readCars();
-    const car = cars.find((car) => car.id === carId);
+    const car = cars.find((car) => car._id === carId);
 
     if (!car) {
       console.error(`Car with ID ${carId} not found`); // Log this
@@ -76,7 +76,7 @@ export class CarManager {
     }
 
     car.oilChangeHistory = car.oilChangeHistory || [];
-    car.oilChangeHistory.push({ date, oilType, mileage });
+    car.oilChangeHistory.push({ date, oilType, mileage, viscosity });
 
     // Optionally, update last oil change details and next oil change date
     car.lastOilChange = date;
@@ -105,7 +105,7 @@ export class CarManager {
     newMilleageUnit: MilleageUnit
   ): boolean {
     const cars = this.repository.readCars();
-    const index = cars.findIndex((car) => car.id === id);
+    const index = cars.findIndex((car) => car._id === id);
 
     if (index !== -1) {
       const car = cars[index];
@@ -131,7 +131,7 @@ export class CarManager {
       cars[index] = {
         ...car,
         brand: newBrand,
-        model: newModel,
+        carModel: newModel,
         typeFuel: newTypeFuel,
         licensePlate: newLicensePlate,
         lastOilChange: newLastOilChange,
@@ -161,6 +161,7 @@ export class CarManager {
             date: newLastOilChange,
             oilType: newOilType,
             mileage: newCurrentMilleage,
+            viscosity: newViscosity,
           });
         }
       }
@@ -184,7 +185,7 @@ export class CarManager {
 
   public deleteCar(id: string): boolean {
     const cars = this.repository.readCars();
-    const index = cars.findIndex((car) => car.id === id);
+    const index = cars.findIndex((car) => car._id === id);
     if (index !== -1) {
       cars.splice(index, 1);
       this.repository.saveCars(cars);

@@ -134,7 +134,6 @@ router.put("/:carId", async (req: Request, res: Response) => {
       averageKmPerYear,
       currentMilleage,
       mileageUnit,
-      oilChangeHistory,
     } = req.body;
 
     // Pobierz samochód z bazy danych
@@ -157,7 +156,6 @@ router.put("/:carId", async (req: Request, res: Response) => {
     car.averageKmPerYear = averageKmPerYear;
     car.currentMilleage = currentMilleage;
     car.mileageUnit = mileageUnit;
-    car.oilChangeHistory = oilChangeHistory;
 
     // Wywołaj metodę do obliczenia daty następnej wymiany oleju
     car.nextOilChangeDate = calculateNextOilChangeDate(

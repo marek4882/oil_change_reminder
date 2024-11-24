@@ -11,29 +11,32 @@ import DetailsVehiclePage from "./pages/DetailsVehiclePage";
 import CrudFormPage from "./pages/CrudFormPage";
 
 import { AuthProvider } from "../../frontend/context/AuthContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
   return (
     <>
-      <AuthProvider>
-        <BrowserRouter>
-          <NavBar />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/signin" element={<SignInPage />} />
-            <Route path="/vehicle" element={<VehiclePage />} />
-            <Route path="/docs" element={<DocsPage />} />
-            <Route path="/form" element={<FormPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route
-              path="/detailsvehicle/:carId"
-              element={<DetailsVehiclePage />}
-            />
-            <Route path="/crudformpage" element={<CrudFormPage />} />
-            <Route path="/crudformpage/:carId" element={<CrudFormPage />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <GoogleOAuthProvider clientId="1009282809407-sh8h2kgmot2q295a503sl5530pldnaj9.apps.googleusercontent.com">
+        <AuthProvider>
+          <BrowserRouter>
+            <NavBar />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/signin" element={<SignInPage />} />
+              <Route path="/vehicle" element={<VehiclePage />} />
+              <Route path="/docs" element={<DocsPage />} />
+              <Route path="/form" element={<FormPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route
+                path="/detailsvehicle/:carId"
+                element={<DetailsVehiclePage />}
+              />
+              <Route path="/crudformpage" element={<CrudFormPage />} />
+              <Route path="/crudformpage/:carId" element={<CrudFormPage />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </GoogleOAuthProvider>
     </>
   );
 }
