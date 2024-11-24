@@ -19,9 +19,9 @@ export interface OilChangeRecord {
 }
 
 export interface Car {
-  id: string;
+  _id: string;
   brand: string;
-  model: string;
+  carModel: string;
   typeFuel: TypeFuel;
   licensePlate: string;
   lastOilChange: Date;

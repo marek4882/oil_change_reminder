@@ -43,14 +43,14 @@ const VehiclePage: React.FC = () => {
                 <img
                   className="vehicle__image"
                   src="src/assets/ford-mustang.png"
-                  alt={`${car.brand} ${car.model}`}
+                  alt={`${car.brand} ${car.carModel}`}
                 />
               </section>
               <section>
                 <p>
                   Car name:{" "}
                   <span className="decoration">
-                    {car.brand} {car.model}
+                    {car.brand} {car.carModel}
                   </span>
                 </p>
                 <p>

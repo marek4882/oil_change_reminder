@@ -20,7 +20,7 @@ const addOilChange = async (
     throw new Error("Date, oilType, viscosity, and mileage are required.");
   }
 
-  const response = await fetch(`http://localhost:5112/vehicles/${id}`, {
+  const response = await fetch(`http://localhost:5112/vehicles/oil/${id}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,

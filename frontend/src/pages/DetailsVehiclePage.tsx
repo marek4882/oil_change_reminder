@@ -1,30 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Car, OilType, TypeFuel, Viscosity } from "../models/Car";
-import { CarManager } from "../services/CarService";
-import { LocalRepository } from "../api/ApiService";
+import { OilChangeRecord, OilType, TypeFuel, Viscosity } from "../models/Car";
 import carImage from "../assets/hero_images.svg";
 import { format } from "date-fns";
 import { Calendar, Drop, Gauge, PlusCircle } from "phosphor-react";
 import { useCar } from "../hooks/useCar";
-import { id, vi } from "date-fns/locale";
 import { useDeleteCar } from "../hooks/useDeleteCar";
 import { useAddOilChange } from "../hooks/useNextOil";
 
 const DetailsVehiclePage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
-  const [car, loading, error] = useCar(carId || "");
+  const [car, setCar, loading, error] = useCar(carId || "");
   const [deleteCar, deleteLoading, deleteError] = useDeleteCar();
   const [addOilChange, addOilChangeLoading, addOilChangeError] =
     useAddOilChange();
 
   const [showOilChangeForm, setShowOilChangeForm] = useState(false);
 
-  const [oilChangeDate, setOilChangeDate] = useState("");
+  const [oilChangeDate, setOilChangeDate] = useState<string>();
   const [oilType, setOilType] = useState<OilType>("Synthetic");
   const [mileage, setMileage] = useState<number>(0);
-  const [viscosity, setViscosity] = useState<Viscosity | null>(null);
+  const [viscosity, setViscosity] = useState<Viscosity>("0W-20");
+
+  useEffect(() => {
+    console.log(car);
+    setOilChangeDate(car?.lastOilChange.toISOString() || oilChangeDate);
+    setOilType(car?.oilType || oilType);
+    setMileage(car?.currentMilleage || mileage);
+    setViscosity(car?.viscosity || viscosity);
+  }, [car]);
 
   const handleAddOilChange = async (
     id: string,
@@ -33,7 +38,24 @@ const DetailsVehiclePage: React.FC = () => {
     viscosity: string,
     mileage: number
   ) => {
+    if (car == null) return;
+
+    setShowOilChangeForm(false);
     await addOilChange(id, date, oilType, mileage, viscosity);
+
+    const newCar = {
+      ...car,
+      oilChangeHistory: [
+        ...(car?.oilChangeHistory || []),
+        {
+          date: new Date(date),
+          mileage: mileage,
+          oilType: oilType as OilType,
+          viscosity: viscosity as Viscosity,
+        } satisfies OilChangeRecord,
+      ],
+    };
+    setCar(newCar);
   };
 
   const handleDeleteCar = async (id: string) => {
@@ -41,15 +63,14 @@ const DetailsVehiclePage: React.FC = () => {
     navigate("/vehicle");
   };
 
-  const handleEdit = () => {
-    if (car) {
-      navigate(`/crudformpage/${car.id}`);
-    }
+  const handleEditCar = (id: string) => {
+    navigate(`/crudformpage/${id}`);
   };
+
   const handleOpenForm = () => {
     if (car?.oilChangeHistory && car.oilChangeHistory.length > 0) {
       const lastRecord = car.oilChangeHistory[car.oilChangeHistory.length - 1];
-      setOilChangeDate(format(new Date(lastRecord.date), "yyyy-MM-dd")); // Ustaw datę w formacie yyyy-MM-dd
+      setOilChangeDate(lastRecord.date.toISOString()); // Ustaw datę w formacie yyyy-MM-dd
       setOilType(lastRecord.oilType as OilType); // Ustaw typ oleju
       setViscosity(lastRecord.viscosity as Viscosity); // Ustaw lepkość
       setMileage(lastRecord.mileage); // Ustaw przebieg
@@ -96,7 +117,7 @@ const DetailsVehiclePage: React.FC = () => {
               <img
                 className="vehicle__image vehicle__image__large"
                 src={carImage}
-                alt={`${car.brand} ${car.model}`}
+                alt={`${car.brand} ${car.carModel}`}
               />
             </picture>
             <div>
@@ -143,7 +164,10 @@ const DetailsVehiclePage: React.FC = () => {
                     : "Brak danych"}
                 </span>
               </p>
-              <button className="btn btn--edit" onClick={handleEdit}>
+              <button
+                className="btn btn--edit"
+                onClick={() => handleEditCar(car._id)}
+              >
                 Edit
               </button>
               <button
@@ -258,10 +282,10 @@ const DetailsVehiclePage: React.FC = () => {
                   onClick={() =>
                     handleAddOilChange(
                       car._id,
-                      car.lastOilChange.toISOString(),
-                      car.oilType,
-                      car.viscosity,
-                      car.currentMilleage
+                      oilChangeDate!,
+                      oilType,
+                      viscosity,
+                      mileage
                     )
                   }
                 >

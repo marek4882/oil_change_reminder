@@ -2,11 +2,37 @@ import { Router, Request, Response } from "express";
 import authMiddleware from "../middleware/authMiddleware"; // Twój middleware
 import { CarModel } from "../models/Car"; // Twój model samochodu
 import mongoose from "mongoose";
+import { OIL_CHANGE_INTERVAL_KM } from "../models/Constant";
 
 // Tworzymy instancję routera
 const router = Router();
 
 router.use(authMiddleware);
+
+const calculateNextOilChangeDate = (
+  averageKmPerYear: number,
+  lastOilChange: Date
+): Date => {
+  // Oblicz liczbę miesięcy do kolejnej wymiany
+  const monthsUntilNextChange =
+    (OIL_CHANGE_INTERVAL_KM / averageKmPerYear) * 12;
+
+  // Stwórz kopię daty ostatniej wymiany, aby dodać liczbę miesięcy
+  const nextOilChangeDate = new Date(lastOilChange);
+  nextOilChangeDate.setMonth(
+    nextOilChangeDate.getMonth() + monthsUntilNextChange
+  );
+
+  // Sprawdź, czy data następnej wymiany przekracza 1 rok
+  const oneYearLater = new Date(lastOilChange);
+  oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+  // Jeśli następna data wymiany jest większa niż rok od ostatniej, ustaw na rok później
+  if (nextOilChangeDate > oneYearLater) {
+    return oneYearLater;
+  }
+  return nextOilChangeDate;
+};
 
 // GET /vehicles
 router.get("/", async (req: Request, res: Response) => {
@@ -74,7 +100,10 @@ router.post("/", async (req: Request, res: Response) => {
     });
 
     // Calculate and set the nextOilChangeDate
-    newCar.nextOilChangeDate = newCar.calculateNextOilChangeDate();
+    newCar.nextOilChangeDate = calculateNextOilChangeDate(
+      newCar.averageKmPerYear,
+      newCar.lastOilChange
+    );
 
     // Save the car with the calculated nextOilChangeDate
     const savedCar = await newCar.save();
@@ -131,7 +160,10 @@ router.put("/:carId", async (req: Request, res: Response) => {
     car.oilChangeHistory = oilChangeHistory;
 
     // Wywołaj metodę do obliczenia daty następnej wymiany oleju
-    car.nextOilChangeDate = car.calculateNextOilChangeDate();
+    car.nextOilChangeDate = calculateNextOilChangeDate(
+      averageKmPerYear,
+      lastOilChange
+    );
 
     // Zapisz zaktualizowany samochód w bazie
     const updatedCar = await car.save();
@@ -201,21 +233,18 @@ router.get("/:carId", async (req: Request, res: Response) => {
 // Post a next oil change
 // vehicle
 
-
-
-router.put("/:carId", async (req: Request, res: Response) => {
+router.put("/oil/:carId", async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
     const { date, oilType, viscosity, mileage } = req.body;
 
     // Validate the required fields
     if (!date || !oilType || !viscosity || !mileage) {
-     res.status(400).json({
+      res.status(400).json({
         success: false,
-        message:
-          "Date, oilType, viscosity, and mileage are required to add an oil change.",
+        message: "Date, oilType, viscosity, and mileage are required.",
       });
-      return
+      return;
     }
 
     // Validate the date
@@ -236,23 +265,27 @@ router.put("/:carId", async (req: Request, res: Response) => {
 
     // Create a new oil change record
     const newOilChangeRecord = {
-      date: validDate, // Ensure the date is a valid Date object
+      date: validDate,
       oilType,
-      viscosity, // Add viscosity
+      viscosity,
       mileage,
     };
 
     // Calculate the next oil change date based on car data
-    const nextOilChangeDate = car.calculateNextOilChangeDate();
+    const nextOilChangeDate = calculateNextOilChangeDate(
+      car.averageKmPerYear,
+      validDate
+    );
 
-    // Prepare the update fields dynamically (use $set for individual fields and $push for the history array)
-    const updateFields: any = {};
-
-    // Only set the fields that are present in the request body
-    updateFields.lastOilChange = validDate;
-    updateFields.currentMilleage = mileage;
-    updateFields.nextOilChangeDate = nextOilChangeDate;
-    updateFields.$push = { oilChangeHistory: newOilChangeRecord };
+    // Prepare the update fields dynamically
+    const updateFields = {
+      lastOilChange: validDate,
+      currentMilleage: mileage,
+      oilType,
+      viscosity,
+      nextOilChangeDate,
+      $push: { oilChangeHistory: newOilChangeRecord },
+    };
 
     // Update the car document
     const updatedCar = await CarModel.findByIdAndUpdate(
@@ -273,7 +306,6 @@ router.put("/:carId", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error adding oil change:", error);
 
-    // If the error is related to validation issues, return a detailed message
     if (error instanceof mongoose.Error.ValidationError) {
       res.status(400).json({
         success: false,
@@ -283,7 +315,6 @@ router.put("/:carId", async (req: Request, res: Response) => {
       return;
     }
 
-    // Generic error response
     res
       .status(500)
       .json({ success: false, message: "Failed to add oil change" });

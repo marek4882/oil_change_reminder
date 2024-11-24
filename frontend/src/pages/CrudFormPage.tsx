@@ -1,25 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MilleageUnit, OilType, TypeFuel, Viscosity } from "../models/Car";
+import { useCar } from "../hooks/useCar";
+import { OIL_CHANGE_INTERVAL_KM } from "../models/Constant";
 
 const CrudFormPage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
-  const [brand, setBrand] = useState("");
-  const [model, setModel] = useState("");
-  const [typeFuel, setTypeFuel] = useState<TypeFuel>("Petrol");
-  const [licensePlate, setLicensePlate] = useState("");
-  const [lastOilChange, setLastOilChange] = useState("");
-  const [oilChangeIntervalKm, setOilChangeIntervalKm] = useState(15000);
-  const [oilType, setOilType] = useState<OilType>("Synthetic");
-  const [viscosity, setViscosity] = useState<Viscosity | null>(null);
-  const [averageKmPerYear, setAverageKmPerYear] = useState(0);
-  const [currentMilleage, setCurrentMilleage] = useState(0);
-  const [mileageUnit, setMileageUnit] = useState<MilleageUnit>("Km");
-  const [averageMileageLabel, setAverageMileageLabel] = useState(
-    "Average Km per Year"
-  );
-
   const navigate = useNavigate();
+  const [car, setCar, loading, error] = useCar(carId || "");
+
+  const [brand, setBrand] = useState(car?.brand);
+  const [model, setModel] = useState(car?.carModel);
+  const [typeFuel, setTypeFuel] = useState<TypeFuel>(car?.typeFuel || "Petrol");
+  const [licensePlate, setLicensePlate] = useState(car?.licensePlate);
+  const [lastOilChange, setLastOilChange] = useState(car?.lastOilChange);
+  const [oilType, setOilType] = useState<OilType>(car?.oilType || "Synthetic");
+  const [viscosity, setViscosity] = useState<Viscosity | null>(
+    car?.viscosity || "0W-20"
+  );
+  const [averageKmPerYear, setAverageKmPerYear] = useState(
+    car?.averageKmPerYear
+  );
+  const [currentMilleage, setCurrentMilleage] = useState(car?.currentMilleage);
+  const [mileageUnit, setMileageUnit] = useState<MilleageUnit>(
+    car?.mileageUnit || "Km"
+  );
+  const [averageMileageLabel, setAverageMileageLabel] = useState(
+    car?.averageKmPerYear || "Average Km per Year"
+  );
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
@@ -225,8 +233,7 @@ const CrudFormPage: React.FC = () => {
           <input
             className="form-control"
             type="number"
-            value={oilChangeIntervalKm}
-            onChange={(e) => setOilChangeIntervalKm(Number(e.target.value))}
+            value={OIL_CHANGE_INTERVAL_KM}
             disabled
           />
         </div>
