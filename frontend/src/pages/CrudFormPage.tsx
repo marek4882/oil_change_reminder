@@ -160,158 +160,163 @@ const CrudFormPage: React.FC = () => {
 
   return (
     <>
-    <section className="block grid grid--1x2">
-      <picture className="hero__image-container">
-        <img className="hero__image" src="src/assets/hero_images.svg" alt="" />
-      </picture>
-      <form onSubmit={handleSubmit}>
-        <h2>{carId ? "Edit Car" : "+ Add Car"}</h2>
-        {/* Brand Field */}
-        <div>
-          <label>Brand:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            required
+      <section className="block grid grid--1x2">
+        <picture className="hero__image-container">
+          <img
+            className="hero__image"
+            src="src/assets/hero_images.svg"
+            alt=""
           />
-        </div>
-        {/* Model Field */}
-        <div>
-          <label>Model:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={model}
-            onChange={(e) => setModel(e.target.value)}
-            required
-          />
-        </div>
-        {/* Fuel Type Dropdown */}
-        <div>
-          <label>Type of Fuel:</label>
-          <select
-            className="form-control"
-            value={typeFuel}
-            onChange={(e) => handleFuelTypeChange(e.target.value as TypeFuel)}
-          >
-            {fuelTypes.map((fuel) => (
-              <option key={fuel} value={fuel}>
-                {fuel}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* License Plate Field */}
-        <div>
-          <label>License Plate:</label>
-          <input
-            className="form-control"
-            type="text"
-            value={licensePlate}
-            onChange={(e) => setLicensePlate(e.target.value)}
-            required
-          />
-        </div>
-        {/* Last Oil Change Date Field */}
-        <div>
-          <label>Last Oil Change Date:</label>
-          <input
-            className="form-control"
-            type="date"
-            value={
-              lastOilChange ? format(lastOilChange, "yyyy-MM-dd") : undefined
-            }
-            onChange={(e) => setLastOilChange(new Date(e.target.value))}
-            required
-          />
-        </div>
-        {/* Oil Change Interval Field */}
-        <div>
-          <label>Oil Change Interval (KM):</label>
-          <input
-            className="form-control"
-            type="number"
-            value={OIL_CHANGE_INTERVAL_KM}
-            disabled
-          />
-        </div>
-        {/* Oil Type Dropdown */}
-        <div>
-          <label>Oil Type:</label>
-          <select
-            className="form-control"
-            value={oilType}
-            onChange={(e) => handleOilTypeChange(e.target.value as OilType)}
-          >
-            {oilTypes[typeFuel]?.map((oil) => (
-              <option key={oil} value={oil}>
-                {oil}
-              </option>
-            )) || <option disabled>No oils available</option>}
-          </select>
-        </div>
-        {/* Viscosity Dropdown */}
-        {oilToViscosityMap[oilType]?.length > 0 && (
+        </picture>
+        <form onSubmit={handleSubmit}>
+          <h2>{carId ? "Edit Car" : "+ Add Car"}</h2>
+          {/* Brand Field */}
           <div>
-            <label>Oil Viscosity:</label>
+            <label>Brand:</label>
+            <input
+              className="form-control"
+              type="text"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              required
+            />
+          </div>
+          {/* Model Field */}
+          <div>
+            <label>Model:</label>
+            <input
+              className="form-control"
+              type="text"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              required
+            />
+          </div>
+          {/* Fuel Type Dropdown */}
+          <div>
+            <label>Type of Fuel:</label>
             <select
               className="form-control"
-              value={viscosity || ""}
-              onChange={(e) => setViscosity(e.target.value as Viscosity)}
+              value={typeFuel}
+              onChange={(e) => handleFuelTypeChange(e.target.value as TypeFuel)}
             >
-              {oilToViscosityMap[oilType]?.map((v) => (
-                <option key={v} value={v}>
-                  {v}
+              {fuelTypes.map((fuel) => (
+                <option key={fuel} value={fuel}>
+                  {fuel}
                 </option>
-              )) || <option disabled>No viscosities available</option>}
+              ))}
             </select>
           </div>
-        )}
+          {/* License Plate Field */}
+          <div>
+            <label>License Plate:</label>
+            <input
+              className="form-control"
+              type="text"
+              value={licensePlate}
+              onChange={(e) => setLicensePlate(e.target.value)}
+              required
+            />
+          </div>
 
-        {/* Current Mileage Field */}
-        <div>
-          <label>Current Mileage:</label>
-          <input
-            className="form-control"
-            type="number"
-            value={currentMilleage}
-            onChange={(e) => setCurrentMilleage(Number(e.target.value))}
-            required
-          />
-        </div>
-        {/* Mileage Unit Dropdown */}
-        <div>
-          <label>Mileage Unit:</label>
-          <select
-            className="form-control"
-            value={mileageUnit}
-            onChange={(e) =>
-              handleMileageUnitChange(e.target.value as MilleageUnit)
-            }
-          >
-            <option value="Km">Km</option>
-            <option value="Mi">Mi</option>
-          </select>
-        </div>
-        {/* Average KM per Year Field */}
-        <div>
-          <label>{averageMileageLabel}:</label>
-          <input
-            className="form-control"
-            type="number"
-            value={averageKmPerYear}
-            onChange={(e) => setAverageKmPerYear(Number(e.target.value))}
-            required
-          />
-        </div>
+          {/* Last Oil Change Date Field */}
+          <div>
+            <label>Last Oil Change Date:</label>
+            <input
+              className="form-control"
+              type="date"
+              value={
+                lastOilChange ? format(lastOilChange, "yyyy-MM-dd") : undefined
+              }
+              onChange={(e) => setLastOilChange(new Date(e.target.value))}
+              required
+            />
+          </div>
+          {/* Oil Change Interval Field */}
+          <div>
+            <label>Oil Change Interval (KM):</label>
+            <input
+              className="form-control"
+              type="number"
+              value={OIL_CHANGE_INTERVAL_KM}
+              disabled
+            />
+          </div>
+          {/* Oil Type Dropdown */}
+          <div>
+            <label>Oil Type:</label>
+            <select
+              className="form-control"
+              value={oilType}
+              onChange={(e) => handleOilTypeChange(e.target.value as OilType)}
+            >
+              {oilTypes[typeFuel]?.map((oil) => (
+                <option key={oil} value={oil}>
+                  {oil}
+                </option>
+              )) || <option disabled>No oils available</option>}
+            </select>
+          </div>
+          {/* Viscosity Dropdown */}
+          {oilToViscosityMap[oilType]?.length > 0 && (
+            <div>
+              <label>Oil Viscosity:</label>
+              <select
+                className="form-control"
+                value={viscosity || ""}
+                onChange={(e) => setViscosity(e.target.value as Viscosity)}
+              >
+                {oilToViscosityMap[oilType]?.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                )) || <option disabled>No viscosities available</option>}
+              </select>
+            </div>
+          )}
 
-        <button className="btn btn--accent" type="submit">
-          {carId ? "Edit Car" : "+ Add Car"}
-        </button>
-      </form>
-    </section>
+          {/* Current Mileage Field */}
+          <div>
+            <label>Current Mileage:</label>
+            <input
+              className="form-control"
+              type="number"
+              value={currentMilleage}
+              onChange={(e) => setCurrentMilleage(Number(e.target.value))}
+              required
+            />
+          </div>
+          {/* Mileage Unit Dropdown */}
+          <div>
+            <label>Mileage Unit:</label>
+            <select
+              className="form-control"
+              value={mileageUnit}
+              onChange={(e) =>
+                handleMileageUnitChange(e.target.value as MilleageUnit)
+              }
+            >
+              <option value="Km">Km</option>
+              <option value="Mi">Mi</option>
+            </select>
+          </div>
+          {/* Average KM per Year Field */}
+          <div>
+            <label>{averageMileageLabel}:</label>
+            <input
+              className="form-control"
+              type="number"
+              value={averageKmPerYear}
+              onChange={(e) => setAverageKmPerYear(Number(e.target.value))}
+              required
+            />
+          </div>
+
+          <button className="btn btn--accent" type="submit">
+            {carId ? "Edit Car" : "+ Add Car"}
+          </button>
+        </form>
+      </section>
     </>
   );
 };
