@@ -47,9 +47,9 @@ function NavBar() {
           <li className="nav__item">
             <Link to="/docs">Docs</Link>
           </li>
-          <li className="nav__item">
+          {/* <li className="nav__item">
             <Link to="/crudformpage">CRUD</Link>
-          </li>
+          </li> */}
 
           {isLoggedIn ? (
             <li className="nav__item">

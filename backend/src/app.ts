@@ -5,7 +5,6 @@ import cors from "cors";
 import connectDB from "./config/db";
 import auth from "./routes/auth";
 import vehicles from "./routes/vehicles";
-import { sendWelcomeEmail } from "./services/EmailService";
 
 dotenv.config();
 

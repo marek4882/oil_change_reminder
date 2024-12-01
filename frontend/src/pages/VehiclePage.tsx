@@ -66,9 +66,9 @@ const VehiclePage: React.FC = () => {
                 <p>
                   Next oil change:{" "}
                   <span className="decoration">
-                    {car.lastOilChange
-                      ? format(car.lastOilChange, "dd-MM-yyyy")
-                      : "No data available"}
+                    {car.nextOilChangeDate
+                      ? format(car.nextOilChangeDate, "dd-MM-yyyy")
+                      : "Brak danych"}
                   </span>
                 </p>
               </section>
